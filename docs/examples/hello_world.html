@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" src="img/favicon.png">
-    <title>PaniniJ</title>
+    <title>Hello World Example</title>
   </head>
 
   <body>
@@ -86,11 +86,97 @@
 <br />
 
 <div class="container">
-  <h2>PaniniJ</h2>
+  <h2>Hello World Example</h2>
   <div class="row">
     <div class="col-sm-12">
-      <p>@PaniniJ is a Java extension for safer and more modular concurrent programming. It adds <em>capsules</em>–a new concurrent programming abstraction–to Java via an easy-to-integrate compiler plugin. Capsules are like Actors, but with certain static guarantees checked at compile-time and reported just like any other compile error. Adding support for capsules to your Java project is as simple as adding a JAR or a Maven-style dependency to your project.</p>
+      <p>In this example, we have three capsules, the first is a passive capsule named
+Console, the second is a passive capsule named Greeter and the third is an
+active capsule called HelloWorld.</p>
 
+<div class="row">
+<div class="col-md-10 offset-md-1">
+<img src="/img/hello_world_capsule_system.jpg" class="img-fluid" alt="The Hello World Capsule System" />
+</div>
+</div>
+<p><br /></p>
+
+<h3 id="consoletemplatejava">ConsoleTemplate.java</h3>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+
+<span class="nd">@Capsule</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConsoleTemplate</span> <span class="o">{</span>
+
+  <span class="nd">@Block</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>The Console capsule has one simple procedure called write. It simply prints out
+to the System.out stream.</p>
+
+<h3 id="greetertemplatejava">GreeterTemplate.java</h3>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+
+<span class="nd">@Capsule</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreeterTemplate</span> <span class="o">{</span>
+
+  <span class="nd">@Imports</span> <span class="n">Console</span> <span class="n">c</span><span class="o">;</span>
+  <span class="n">String</span> <span class="n">message</span><span class="o">;</span>
+
+  <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s">"Hello"</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Block</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sendMessage</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">c</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>The capsule Greeter has a field of type Console that is annotated with the
+<code class="highlighter-rouge">@Imports</code>. This means that the Greeter wants to call procedures of a Console
+capsule, but does not want to create the instance of the capsule. By using
+<code class="highlighter-rouge">@Imports</code>, it specifies that the parent capsule of the Greeter must supply the
+reference to the Console capsule. This is shown in the HelloWorldTemplate in the
+design method where g.imports is called and the reference to the Console capsule
+is passed as a parameter.</p>
+
+<h3 id="helloworldtemplatejava">HelloWorldTemplate.java</h3>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+
+<span class="nd">@Root</span>
+<span class="nd">@Capsule</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorldTemplate</span> <span class="o">{</span>
+  <span class="nd">@Local</span> <span class="n">Greeter</span> <span class="n">g</span><span class="o">;</span>
+  <span class="nd">@Local</span> <span class="n">Console</span> <span class="n">c</span><span class="o">;</span>
+
+  <span class="kt">void</span> <span class="nf">design</span><span class="o">(</span><span class="n">HelloWorld</span> <span class="n">self</span><span class="o">)</span> <span class="o">{</span>
+   <span class="n">g</span><span class="o">.</span><span class="na">imports</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">g</span><span class="o">.</span><span class="na">sendMessage</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">CapsuleSystem</span><span class="o">.</span><span class="na">start</span><span class="o">(</span><span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>The active capsule HelloWorld holds a reference to the passive capsules Greeter
+and Console in order to call on their procedures. This connection is set up by
+the <code class="highlighter-rouge">@Local</code> annotation on the Greeter and Console field of the
+HelloWorldTemplate.</p>
 
     </div>
   </div>

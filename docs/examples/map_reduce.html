@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" src="img/favicon.png">
-    <title>PaniniJ</title>
+    <title>Example: Map Reduce</title>
   </head>
 
   <body>
@@ -86,11 +86,61 @@
 <br />
 
 <div class="container">
-  <h2>PaniniJ</h2>
+  <h2>Example: Map Reduce</h2>
   <div class="row">
     <div class="col-sm-12">
-      <p>@PaniniJ is a Java extension for safer and more modular concurrent programming. It adds <em>capsules</em>–a new concurrent programming abstraction–to Java via an easy-to-integrate compiler plugin. Capsules are like Actors, but with certain static guarantees checked at compile-time and reported just like any other compile error. Adding support for capsules to your Java project is as simple as adding a JAR or a Maven-style dependency to your project.</p>
+      <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">SupervisorTemplate</span> <span class="o">{</span>
+    <span class="kd">static</span> <span class="kd">final</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+    <span class="kd">static</span> <span class="kd">final</span> <span class="n">R</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
 
+    <span class="nd">@Local</span> <span class="n">Mapper</span><span class="o">[]</span> <span class="n">mappers</span><span class="o">;</span>
+    <span class="nd">@Local</span> <span class="n">Reducer</span><span class="o">[]</span> <span class="n">reducers</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Future</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;[]</span> <span class="n">mapFutures</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Future</span><span class="o">&lt;&gt;[</span><span class="n">M</span><span class="o">];</span>
+        <span class="n">Result</span><span class="o">[]</span> <span class="n">results</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Result</span><span class="o">[</span><span class="n">R</span><span class="o">];</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">futures</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">mappers</span><span class="o">.</span><span class="na">getItems</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="n">f</span> <span class="o">:</span> <span class="n">mapFutures</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">f</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>  <span class="c1">// Wait until each mapper is done.</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">idx</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">results</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Result</span> <span class="n">r</span> <span class="o">:</span> <span class="n">results</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">r</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">MapperTemplate</span> <span class="o">{</span>
+    <span class="nd">@Imported</span> <span class="n">Reducer</span> <span class="n">reducers</span><span class="o">;</span>
+    <span class="nd">@Future</span> <span class="n">Void</span> <span class="nf">map</span><span class="o">(</span><span class="n">Items</span> <span class="n">w</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Item</span> <span class="n">i</span> <span class="o">:</span> <span class="n">w</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">ReducerTemplate</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">State</span> <span class="n">s</span><span class="o">;</span>
+    <span class="n">Result</span> <span class="nf">reduce</span><span class="o">()</span> <span class="o">{</span>
+        <span class="o">...</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
 
     </div>
   </div>
