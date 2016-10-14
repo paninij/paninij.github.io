@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" src="img/favicon.png">
-    <title>PaniniJ</title>
+    <title>@PaniniJ</title>
   </head>
 
   <body>
@@ -21,7 +21,7 @@
     </a>
     <div id="header-text">
       <h1>&#64;PaniniJ</h1>
-      <p>Better Modularity, Better Concurrency</p>
+      <p>Better Modularity &#8658; Better Concurrency</p>
     </div>
   </header>
   <nav class="navbar navbar-light row">
@@ -86,11 +86,51 @@
 <br />
 
 <div class="container">
-  <h2>PaniniJ</h2>
   <div class="row">
     <div class="col-sm-12">
-      <p>@PaniniJ is a Java extension for safer and more modular concurrent programming. It adds <em>capsules</em>–a new concurrent programming abstraction–to Java via an easy-to-integrate compiler plugin. Capsules are like Actors, but with certain static guarantees checked at compile-time and reported just like any other compile error. Adding support for capsules to your Java project is as simple as adding a JAR or a Maven-style dependency to your project.</p>
+      <h4 id="what-is-it">What is it?</h4>
 
+<p>@PaniniJ is a Java extension for safer and more modular concurrent
+programming. It adds <strong>capsules</strong> to Java via an easy-to-integrate compiler
+plugin.</p>
+
+<p>Capsules are a new concurrent programming abstraction. They are like Actors, but
+with certain static guarantees that are checked at compile-time. If one of these
+static checks fails, the error is reported just like an ordinary Java compiler
+error.</p>
+
+<p>Adding @PaniniJ to your Java project is as simple as adding a JAR or a
+Maven-style dependency.</p>
+
+<h4 id="why">Why?</h4>
+
+<p>Existing concurrent programming practices leave practitioners with no choice but
+to program using unbridled concurrency mechanisms, and then find and remove
+concurrency errors.</p>
+
+<p>We believe that this path is untenable. The Panini project investigates an
+alternative: create abstractions that eliminate classes of concurrency errrors
+by construction.</p>
+
+<p>Our work focuses on an abstraction called a capsule, a boundary within which you
+can write and reuse sequential code as-is. We work on increasing the class of
+concurrency errors that can be eliminated from capsule-oriented programs by
+construction.</p>
+
+<h4 id="goals">Goals</h4>
+
+<ul>
+  <li><strong>Solve pervasive and oblivious interference problems:</strong> enable modular
+reasoning about concurrent programs.</li>
+  <li><strong>Implicit concurrency:</strong> eliminate usage of unsafe features like threads and
+locks.</li>
+  <li><strong>Integrated compile-time analysis of concurrency hazards:</strong> errors are caught
+early.</li>
+  <li><strong>Retain familiarity:</strong> Programmers need not switch to a completely new
+programming model.</li>
+  <li><strong>Enable as-is reuse of sequential code:</strong> portions of software are guaranteed
+to be single-threaded.</li>
+</ul>
 
     </div>
   </div>
