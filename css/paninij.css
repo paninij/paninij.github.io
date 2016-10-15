@@ -51,4 +51,4 @@ ol#markdown-toc {
   color: #9F211A; }
 
 .nav-item:hover, .dropdown-item:hover, .nav-item:focus, .dropdown-item:focus {
-  background-color: rgba(0, 0, 0, 0.05); }
+  background-color: rgba(0, 0, 0, 0.1); }
