@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
 <!-- Latest compiled and minified JavaScript -->
-    <title>Setup @PaniniJ in Netbeans</title>
+    <title>A Tour of @PaniniJ</title>
   </head>
 
   <body>
@@ -100,10 +100,90 @@
 
 <br />
 <div class="container">
-  <h2>Setup @PaniniJ in Netbeans</h2>
+  <h2>A Tour of @PaniniJ</h2>
   <div class="row">
     <div class="col-sm-12">
-      <p><strong>TODO:</strong></p>
+      <p>Panini is a mathematical model for describing modular concurrent computation
+using the concept of a <em>capsule</em>. A capsule is a concurrent entity similar to an
+<a href="https://en.wikipedia.org/wiki/Actor_model">actor</a>.</p>
+
+<p>@PaniniJ takes the idea of a capsule and brings it to any programmer familiar
+with Java and working on the JVM. Code created with @PaniniJ is safer and
+easier to understand than code relying on traditional Java threads.</p>
+
+<p>An @PaniniJ capsule is specified by writing a Java class. By just adding the
+<code class="highlighter-rouge">@Capsule</code> annotation to a Java class, that class can be interpreted as a
+capsule.</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello, World."</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>We call this class <em>the capsule’s core</em>. It is how one can specify</p>
+
+<ul>
+  <li>the state encapsulated by the capsule</li>
+  <li>the other capsules which this capsule knows about</li>
+  <li>code for handling requests from other capsules</li>
+</ul>
+
+<p>You can think of a capsule core as the stateful and behavioral center of a
+capsule. The @PaniniJ runtime is responsible for wraping and executing a graph
+of these capsule cores, all running in parallel.</p>
+
+<p>In @PaniniJ, these capsules communicate with one another by what looks like a
+normal Java method calls. However, a call actually triggers <em>an asynchronous
+message send</em>. To distinguish these inter-capsule calls from normal Java method
+calls, we say that one capsule <em>invokes a procedure</em> on another capsule.</p>
+
+<p>Here is an example where a <code class="highlighter-rouge">HelloWorld</code> capsule invokes the <code class="highlighter-rouge">work()</code> procedure
+on a <code class="highlighter-rouge">Worker</code> instance:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+    <span class="c1">// Declare the existence of another capsule.</span>
+    <span class="nd">@Local</span> <span class="n">Worker</span> <span class="n">w</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// An async procedure invocation.</span>
+        <span class="n">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="na">work</span><span class="o">(</span><span class="k">new</span> <span class="n">Foo</span><span class="o">(...));</span>
+        <span class="c1">// Do our own work.</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// Finally, use the result.</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">WorkerCore</span> <span class="o">{</span>
+    <span class="c1">// A procedure. It can be invoked asynchronously by other capsules.</span>
+    <span class="n">Bar</span> <span class="nf">work</span><span class="o">(</span><span class="n">Foo</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Bar</span> <span class="n">b</span><span class="o">;</span>
+        <span class="c1">// Do lots of work.</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// Eventually return the result of the work.</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Additionally, what appears to be an inter-capsule return values is
+actually an implicit future to the request’s result. The requesting capsule may
+block on this future immediately, or it may do some other useful work before
+blocking, or it may just ignore it.</p>
+
+<p>Defining a graph of capsules is easy, because a communication link and/or node
+in the graph is just specified by declaring a capsule core field with an
+annotation.</p>
+
+<p>These and other features can be added to a Java project by including @PaniniJ as
+just another Java project dependency (e.g. a JAR or a Maven dependency).
+Specifically, you need to depend on the @PaniniJ annotation processor. An
+annotation processor extends any standards-compliant java compiler (e.g.
+Oracle’s <code class="highlighter-rouge">javac</code>, Eclipse, IntelliJ IDEA, etc).</p>
 
     </div>
   </div>

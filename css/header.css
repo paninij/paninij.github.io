@@ -1,0 +1,35 @@
+header div#header-banner-flex-space {
+  flex-grow: 2; }
+header #banner-logo {
+  font-size: 14px; }
+header #header-logo img {
+  margin: 10px; }
+header #header-banner {
+  display: flex;
+  align-items: center; }
+header nav.navbar.navbar-light {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  border-radius: 5px;
+  background-color: #a11f12; }
+  header nav.navbar.navbar-light .nav-item a, header nav.navbar.navbar-light a.navbar-brand {
+    color: rgba(255, 255, 255, 0.9) !important; }
+  header nav.navbar.navbar-light li.nav-item:hover, header nav.navbar.navbar-light .navbar-brand:hover {
+    color: rgba(0, 0, 0, 0.4); }
+  header nav.navbar.navbar-light .dropdown-menu {
+    background-color: #a11f12; }
+header #header-brand h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: .2rem;
+  color: #a11f12; }
+header #header-brand h2 {
+  font-size: 1rem;
+  font-weight: lighter;
+  margin-bottom: 1rem;
+  color: #9F211A; }
+header .nav-item:hover,
+header .dropdown-item:hover,
+header .nav-item:focus,
+header .dropdown-item:focus {
+  background-color: rgba(0, 0, 0, 0.1); }
