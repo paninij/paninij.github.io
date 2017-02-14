@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/pygments_themes/default.css">
+    <link rel="stylesheet" href="/css/paninij.css">
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+    <title>Leader-Follower Pattern</title>
+  </head>
+
+  <body>
+
+    <div class="base-content container">
+    <main>
+<h1>Chapter 10. Leader-Follower Pattern</h1>
+<h2 id="creating-serverclient-applications-in-panini">Creating Server/Client applications in Panini</h2>
+
+<p>Servers are naturally concurrent applications, they have to be able to respond
+to requests from clients at any point in time and can make no assumptions about
+when these requests arrive. Panini’s features allow the programmer to write a
+server application as if he/she were writting a sequential program and get the
+concurrency needed to make the application viable in a real world setting via
+implicit concurrency. To illustrate we will be coding a simple EchoServer that
+simply repeats everything the clients say.</p>
+
+<h2 id="architecture-and-design">Architecture and design</h2>
+
+<ol>
+  <li>
+    <p>Divide the problems into subproblems. In our case, the subproblems are:
+a. accept incoming connections.
+b. handle these connections accordingly.
+c. for illustration purposes write a client program to help test the server.</p>
+  </li>
+  <li>
+    <p>The Panini programmer specifies a system as a collection of capsules,
+signatures and ordinary object-oriented classes. A capsule is an abstraction
+for decomposing a software into its parts and a design block is a mechanism
+for composing these parts together. So the first order of business is to
+come up with this capsule-oriented design. This involves creating capsules
+and assigning subtasks to these capsules.</p>
+  </li>
+  <li>
+    <p>Make key design decisions. In our case, we want our server to be able to
+respons to multiple quasi-simultaneous incoming requests with ease.</p>
+  </li>
+  <li>
+    <p>Create capsules and assign responsibilities to capsules. We will start by
+defining the capsule EchoServer.</p>
+
+    <p><strong>Listing 10.1:</strong> Capsule EchoServer</p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">EchoServer</span> <span class="o">{...}</span>
+</code></pre>
+    </div>
+
+    <p>Now that we have a simple name to refer to the server we will define the
+capsule ConnectionHandler which needs to communicate with the server.</p>
+
+    <p><strong>Listing 10.2:</strong> <em>Capsule ConnectionHandler</em></p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">ConnectionHandler</span><span class="o">(</span><span class="n">EchoServer</span> <span class="n">server</span><span class="o">)</span> <span class="o">{...}</span>
+</code></pre>
+    </div>
+
+    <p>As a separate program we define the client. As you can see bellow the
+EchoClient does not need to know about the capsule EchoServer, it will
+communicate with it via a custom network protocol that will be evident
+later.</p>
+
+    <p><strong>Listing 10.3:</strong> <em>The client</em></p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">EchoClient</span><span class="o">()</span> <span class="o">{...}</span>
+</code></pre>
+    </div>
+
+    <p>integrate capsules to form a design block. Since we want our server to
+handle multiple connections at the same time it makes sense to have multiple
+such handlers.</p>
+
+    <p><strong>Listing 10.4:</strong> <em>Design block</em></p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">EchoServer</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="n">ConnectionHandler</span> <span class="n">connHandlers</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+    <span class="n">wireall</span><span class="o">(</span><span class="n">connHandlers</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+    </div>
+
+    <p>Every capsule can have a design block, it effectively marks the capsule as a
+high level component that is composed out of other capsules. In our case,
+the best choice would be to give the Pipeline capsule such a block.</p>
+
+    <p>This declarative design block (lines 3-5) declares a set of 10
+ConnectionHandler capsules. On line 4 we link all of these capsules to the
+current EchoServer capsule.</p>
+
+    <p>Since the EchoClient program is composed only out of that one capsule it
+does not require a design block.</p>
+  </li>
+</ol>
+
+<h2 id="implementation">Implementation</h2>
+
+<h3 id="capsule-echoserver">Capsule EchoServer</h3>
+
+<p>The only thing that the server does is listen on port 8080 and accept a
+connection (line 19), when requested.</p>
+
+<p><strong>Listing 10.5:</strong> <em>Entire implementation of EchoServer</em></p>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">EchoServer</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="n">ConnectionHandler</span> <span class="n">connHandlers</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+    <span class="n">wireall</span><span class="o">(</span><span class="n">connHandlers</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="n">ServerSocket</span> <span class="n">ss</span><span class="o">;</span>
+  <span class="o">=&gt;</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">ss</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerSocket</span><span class="o">(</span><span class="mi">8080</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">){</span> <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span> <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="n">Socket</span> <span class="nf">getConnection</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Socket</span> <span class="n">s</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">s</span> <span class="o">=</span> <span class="n">ss</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">){</span> <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span> <span class="o">}</span>
+    <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>To allow other capsules to change its state, a capsule can provide capsule
+procedures, procedures for short. A capsule procedure is syntactically similar
+to methods in object-oriented languages, however, they are different
+semantically in two ways: first, a capsule procedures is by default public
+(although private helper procedures can be declared using the private keyword),
+and second a procedure invocation is guaranteed to be logically synchronous. In
+some cases, Panini may be able to run procedures in parallel to improve
+parallelism in Panini programs. Calls to a non-void external capsule procedure
+immediately returns a “future” value, while the procedure that is called runs
+concurrently. That value behaves exactly like normal values, so you won’t need
+to modify your programs to make adjustments for it. When you need the actual
+value, and if the called procedure has completed running execution proceeds as
+usual, otherwise execution is blocked until the called procedure completes
+running.</p>
+
+<p>The =&gt; denotes a capsule initialization block. Every capsule may declare it. The
+semantics of the language ensure that it will be run before the capsule responds
+to any messages (procedure calls).</p>
+
+<p>ConnectionHandler When a ConnectionHandler calls the getConnection procedure,
+the call returns immediately with a future representing the Socket object, and a
+task corresponding to the procedure body is queued for execution in the Host.
+When a worker attempts to use the socket in its handleConnection helper, it
+blocks until the Server provides the actual socket. A server that can handle
+variable size connections can also be implemented similarly by introducing a
+mediator capsule between Server and Worker.</p>
+
+<p><strong>Listing 10.6:</strong> <em>ConnectionHandler implementation</em></p>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">ConnectionHandler</span><span class="o">(</span><span class="n">EchoServer</span> <span class="n">server</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">Socket</span> <span class="n">s</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="na">getConnection</span><span class="o">();</span>
+      <span class="n">handleConnection</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="kt">void</span> <span class="nf">handleConnection</span><span class="o">(</span><span class="n">Socket</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
+      <span class="n">BufferedReader</span> <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span>
+                 <span class="k">new</span> <span class="nf">InputStreamReader</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">()));</span>
+      <span class="n">String</span> <span class="n">clientInput</span><span class="o">;</span>
+      <span class="k">while</span> <span class="o">((</span><span class="n">clientInput</span> <span class="o">=</span> <span class="n">in</span><span class="o">.</span><span class="na">readLine</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"client␣says:␣"</span> <span class="o">+</span> <span class="n">clientInput</span><span class="o">);</span>
+        <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">clientInput</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span> <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span> <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Any capsule with a run procedure begins executing independently as soon as the
+initialization and interconnection of all capsules is complete and may generate
+calls to the procedures of other capsules. For example, capsule Pipeline will
+run the code on lines 3-8. Capsules without a run procedure, such as EchoServer,
+perform computation only when their procedures are invoked.</p>
+
+<p>The implementation of the handleConnection procedures should be easily
+understood by any Java programmer familiar with network communication. For any
+given connection, the handler will simply read all input and print it to the
+standard output.</p>
+
+<p>Capsule EchoClient. A client will simply open a connection to a running server
+through port 8080, send a “Hello Server!” and “Goodbye Server!” message, both
+times printing the server’s response.</p>
+
+<p><strong>Listing 10.7:</strong> <em>Entire implementation of EchoServer</em></p>
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.net.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="n">capsule</span> <span class="nf">EchoClient</span><span class="o">()</span> <span class="o">{</span>
+
+  <span class="n">Socket</span> <span class="n">echoSocket</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="n">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="n">BufferedReader</span> <span class="n">in</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="n">BufferedReader</span> <span class="n">stdIn</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+  <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">open</span><span class="o">();</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello␣Server!"</span><span class="o">);</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Server␣replied:␣"</span> <span class="o">+</span> <span class="n">in</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">""</span> <span class="o">+</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">+</span> <span class="s">"."</span><span class="o">);</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Server␣replied:␣"</span> <span class="o">+</span> <span class="n">in</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Good␣bye."</span><span class="o">);</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Server␣replied:␣"</span> <span class="o">+</span> <span class="n">in</span><span class="o">.</span><span class="na">readLine</span><span class="o">());</span>
+      <span class="n">close</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">open</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">echoSocket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">8080</span><span class="o">);</span>
+      <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PrintWriter</span><span class="o">(</span><span class="n">echoSocket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">(),</span> <span class="kc">true</span><span class="o">);</span>
+      <span class="n">in</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">echoSocket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">()));</span>
+      <span class="n">stdIn</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BufferedReader</span><span class="o">(</span><span class="k">new</span> <span class="n">InputStreamReader</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">in</span><span class="o">));</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnknownHostException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="n">capsule</span> <span class="nf">EchoClient</span><span class="o">()</span> <span class="o">{...}</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">close</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+      <span class="n">in</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+      <span class="n">stdIn</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+      <span class="n">echoSocket</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">err</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>As you can see, capsules can declare helper procedures: open (line 25) and close
+(line 38). These are accessible only by the owner capsule.</p>
+
+<h2 id="implicit-concurrency">Implicit concurrency</h2>
+
+<p>This code is very similar to how one would write a sequential program to model
+the same scenario, so the structure of this Panini program would be familiar to
+a sequential programmer. This code is also free of any concurrency-related
+concerns, such as setup and teardown threads, synchronization between the
+ConnectionHandlers to access the EchoServer’s ServerSocket.</p>
+
+<p>An example of implicit concurrency is the run procedure of the ConnectionHandler
+capsule. All ten capsules will ask the EchoServer capsule for a connection and
+once such a connection is obtained any other handler can go acquire another one
+without having to wait on any previous handlers to finish communicating with the
+clients.</p>
+
+<p>When it is safe to exploit these sources of implicit concurrency, Panini
+compiler will automatically introduce parallelism to speedup this program
+without intervention from the programmer.</p>
+
+</main>
+
+    </div>
+
+    <!-- Adapted from http://tholman.com/github-corners/ -->
+<a href="https://github.com/paninij/paninij" class="github-corner hidden-xs-down" aria-label="View source on Github">
+  <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#9F211A; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

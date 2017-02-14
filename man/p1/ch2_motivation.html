@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/pygments_themes/default.css">
+    <link rel="stylesheet" href="/css/paninij.css">
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+    <title>Motivation</title>
+  </head>
+
+  <body>
+
+    <div class="base-content container">
+    <main>
+<h1>Chapter 2. Motivation</h1>
+<h2 id="a-pressing-need">A Pressing Need</h2>
+
+<p>There is no escape: all programmers will soon be forced to consider concurrency
+decisions in software design. Most modern software systems tend to be
+distributed, event-driven, and asynchronous, often requiring components to
+maintain multiple threads for message and event handling. There is also
+increasing pressure on developers to introduce concurrency into applications in
+order to take advantage of multicore processors to improve performance.</p>
+
+<p>Yet concurrent programming stubbornly remains difficult and error-prone. First,
+a programmer must partition the overall system workload into tasks. Second,
+tasks must be associated with threads of execution in a manner that improves
+utilization while minimizing overhead; note that this set of decisions is highly
+dependent on characteristics of the platform, such as the number of available
+cores. Finally, the programmer must manage the dependence, interaction, and
+potential interleaving between tasks to maintain the intended semantics and
+avoid concurrency hazards, often by using low-level primitives for
+synchronization. To address these issues, the invention and refinement of better
+abstractions is needed: that can hide the details of concurrency from the
+programmer and allow them to focus on the program logic.</p>
+
+<p>The significance of better abstractions for concurrency is not lost on the
+research community. However, we believe that a major gap remains. There is an
+impedance mismatch between sequential and implicitly concurrent code written
+using existing abstractions that is hard for a sequentially trained programmer
+to overcome. These programmers typically rely upon the sequence of operations to
+reason about their programs.</p>
+
+<h2 id="running-example">Running Example</h2>
+
+<p>To illustrate the challenges of concurrent program design, consider a simplified
+version of the classic arcade game Asteroids. The game consists of five
+components: a ship (Ship), game logic (Logic), user input (Input), controller
+(Asteroids) and a UI. The user input listens to the keyboard, parses the input,
+and directs the ship to make corresponding moves. The logic component maintains
+the board configuration, generates new asteroids, computes whether any
+previously generated asteroids have been destroyed by the ship, and computes
+whether the ship has collided with an asteroid. The ship moves and fires rockets
+as directed. The controller mediates the model and the view.</p>
+
+<h2 id="difficult-concurrency-related-design-decisions">Difficult Concurrency-related Design Decisions</h2>
+
+<p>The modular structure of the system is clear from the description above, and it
+is not difficult to define five Java classes with appropriate methods
+corresponding to this design. However, the system will not yet work. The
+programmer is faced with a number of nontrivial decisions: Which of these
+components needs to be associated with an execution thread of its own? Which
+operations must be executed asynchronously? Where is synchronization going to be
+needed? A human expert might reach the following conclusions, shown in listing
+2.1.</p>
+
+<ul>
+  <li>
+    <p>A thread is needed to read the user input (line 49)</p>
+  </li>
+  <li>
+    <p>The UI, as usual, has its own event-handling thread. The calls on the UI need
+to pass their data to the event handling thread via the UI event queue (lines
+25 and 27)</p>
+  </li>
+  <li>
+    <p>The game logic needs to run in a separate thread; otherwise, calls to update
+game state will “steal” the controller thread and cause the game to become
+jittery</p>
+  </li>
+  <li>
+    <p>The Ship class does not need a dedicated thread, however, its methods need to
+be synchronized, since its data is accessed by both the user input thread and
+the controller thread</p>
+  </li>
+</ul>
+
+<p><strong>Listing 2.1:</strong> Program for a simplified arcade game Asteroids.</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Ship</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">short</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">die</span><span class="o">()</span> <span class="o">{</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> <span class="o">}</span>
+    <span class="kd">synchronized</span>  <span class="kt">void</span> <span class="nf">fire</span><span class="o">()</span> <span class="o">{</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="o">}</span>
+    <span class="kd">synchronized</span> <span class="kt">boolean</span> <span class="nf">alive</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">state</span> <span class="o">!=</span> <span class="mi">2</span><span class="o">;</span> <span class="o">}</span>
+    <span class="kd">synchronized</span> <span class="kt">boolean</span> <span class="nf">isFiring</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">state</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+    <span class="kd">synchronized</span> <span class="kt">int</span> <span class="nf">getPos</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">x</span><span class="o">;</span> <span class="o">}</span>
+    <span class="kd">synchronized</span>  <span class="kt">void</span> <span class="nf">moveLeft</span><span class="o">()</span> <span class="o">{</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">)</span> <span class="n">x</span><span class="o">--;</span> <span class="o">}</span>
+    <span class="kd">synchronized</span>  <span class="kt">void</span> <span class="nf">moveRight</span><span class="o">()</span> <span class="o">{</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">)</span> <span class="n">x</span><span class="o">++;</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Asteroids</span> <span class="kd">extends</span> <span class="n">Thread</span> <span class="o">{</span>
+    <span class="n">Ship</span> <span class="n">s</span><span class="o">;</span> <span class="n">UI</span> <span class="n">ui</span><span class="o">;</span> <span class="n">Logic</span> <span class="n">l</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+            <span class="kt">int</span> <span class="n">points</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+            <span class="k">while</span><span class="o">(</span><span class="n">s</span><span class="o">.</span><span class="na">alive</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="kt">int</span> <span class="n">shipPos</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">getPos</span><span class="o">();</span>
+                    <span class="kt">boolean</span> <span class="n">isFiring</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">isFiring</span><span class="o">();</span>
+                    <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="na">step</span><span class="o">(</span><span class="n">shipPos</span><span class="o">,</span> <span class="n">isFiring</span><span class="o">);</span>
+                    <span class="k">if</span><span class="o">(</span><span class="n">result</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">)</span> <span class="n">points</span> <span class="o">+=</span> <span class="n">result</span><span class="o">;</span>
+                    <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">result</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">)</span> <span class="n">s</span><span class="o">.</span><span class="na">die</span><span class="o">();</span>
+                    <span class="n">ui</span><span class="o">.</span><span class="na">repaint</span><span class="o">(</span><span class="n">shipPos</span><span class="o">,</span> <span class="n">isFiring</span><span class="o">,</span> <span class="n">points</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="n">ui</span><span class="o">.</span><span class="na">endgame</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Ship</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Ship</span><span class="o">();</span>
+            <span class="n">Input</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Input</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+            <span class="n">Logic</span> <span class="n">l</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Logic</span><span class="o">();</span>
+            <span class="n">UI</span> <span class="n">ui</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UI</span><span class="o">(</span><span class="n">l</span><span class="o">);</span>
+            <span class="n">Asteroids</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Asteroids</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="n">ui</span><span class="o">,</span> <span class="n">l</span><span class="o">);</span>
+            <span class="n">c</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="n">i</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+            <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">i</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+                    <span class="n">c</span><span class="o">.</span><span class="na">join</span><span class="o">();</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">Asteroids</span><span class="o">(</span><span class="n">Ship</span> <span class="n">s</span><span class="o">,</span> <span class="n">UI</span> <span class="n">ui</span><span class="o">;</span> <span class="n">Logic</span> <span class="n">l</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span> <span class="k">this</span><span class="o">.</span><span class="na">ui</span> <span class="o">=</span> <span class="n">ui</span><span class="o">;</span> <span class="k">this</span><span class="o">.</span><span class="na">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">UI</span> <span class="o">{</span> <span class="cm">/* provides repaint, endgame */</span> <span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Input</span> <span class="kd">extends</span> <span class="n">Thread</span> <span class="o">{</span> <span class="cm">/* reads player input */</span> <span class="o">}</span>
+<span class="kd">class</span> <span class="nc">Logic</span> <span class="o">{</span> <span class="cm">/* provides step */</span> <span class="o">}</span>
+</code></pre>
+</div>
+
+<p>None of the conclusions above, in itself, is difficult to implement in Java.
+Rather, in practice it is the process of visualizing the interactions between
+the components, in order to reach those conclusions, that is extremely
+challenging for programmers [2][2] [1][1].</p>
+
+<p>[1] ACM/IEEE-CS Joint Task Force. Computer science curricula 2013 (CS2013).
+Technical report, ACM/IEEE, 2012.</p>
+
+<p>[2] D. Meder, V. Pankratius, and W. F. Tichy. Parallelism in curricula an
+international survey. Technical report, University of Karlsruhe, 2008.</p>
+
+</main>
+
+    </div>
+
+    <!-- Adapted from http://tholman.com/github-corners/ -->
+<a href="https://github.com/paninij/paninij" class="github-corner hidden-xs-down" aria-label="View source on Github">
+  <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#9F211A; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

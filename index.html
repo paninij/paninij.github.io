@@ -77,6 +77,7 @@
       <li class="nav-item dropdown">
         <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item" href="/man/">Manual</a>
           <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
           <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
           <a class="dropdown-item" href="/docs/examples/hello_world.html">Example: Hello World</a>
@@ -104,21 +105,107 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-      <h2 id="what-is-it">What is it?</h2>
+      <h4 id="capsule-oriented-programming-in-java">Capsule-Oriented Programming in Java</h4>
 
 <p>@PaniniJ is a Java extension for safer and more modular concurrent
-programming. It adds <strong>capsules</strong> to Java via an easy-to-integrate compiler
-plugin.</p>
+programming. It adds <strong>capsules</strong> to Java via an easy-to-integrate <em>compiler
+plugin</em>.</p>
 
-<p>Capsules are a new concurrent programming abstraction. They are like Actors, but
-with certain static guarantees that are checked at compile-time. If one of these
-static checks fails, the error is reported just like an ordinary Java compiler
-error.</p>
+<p><br /></p>
 
-<p>Adding @PaniniJ to your Java project is as simple as adding a JAR or a
+<h4 id="concurrent-execution-and-asynchronous-communication">Concurrent Execution and Asynchronous Communication</h4>
+
+<p>Capsules are specified by writing annotated Java classes:</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello, world."</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Capsules run concurrently. They send messages to one another using method-call
+syntax. These messages usually represent an asynchronous task that one capsule
+wants another capsule to perform.</p>
+
+<p>A <em>transparent future</em> to the result of this asynchronous task is returned
+immediately. With this future, the client has the option to possibly</p>
+
+<ul>
+  <li>Ignore the result.</li>
+  <li>Wait for the result.</li>
+  <li>Do some work, then wait for the result.</li>
+  <li>Or just pass it on to another capsule.</li>
+</ul>
+
+<p>The below example shows a client capsule asynchronously requesting two
+potentially costly operations to be performed by two other capsule instances.</p>
+
+<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.Capsule</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.paninij.lang.Local</span><span class="o">;</span>
+
+<span class="nd">@Capsule</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClientCore</span> <span class="o">{</span>
+    <span class="nd">@Local</span> <span class="n">Graph</span> <span class="n">graphA</span><span class="o">;</span>
+    <span class="nd">@Local</span> <span class="n">Graph</span> <span class="n">graphB</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Path</span> <span class="n">pathAB</span> <span class="o">=</span> <span class="n">graphA</span><span class="o">.</span><span class="na">shortestPath</span><span class="o">(</span><span class="s">"A"</span><span class="o">,</span> <span class="s">"B"</span><span class="o">);</span>
+        <span class="n">Path</span> <span class="n">pathYZ</span> <span class="o">=</span> <span class="n">graphA</span><span class="o">.</span><span class="na">shortestPath</span><span class="o">(</span><span class="s">"Y"</span><span class="o">,</span> <span class="s">"Z"</span><span class="o">);</span>
+        <span class="c1">// Do more work.</span>
+        <span class="c1">// ...</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">pathAB</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">pathYZ</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">GraphCore</span> <span class="o">{</span>
+    <span class="c1">// Encapsulated graph state.</span>
+    <span class="c1">// ...</span>
+    <span class="kd">public</span> <span class="n">Path</span> <span class="nf">shortestPath</span><span class="o">(</span><span class="n">String</span> <span class="n">vertexA</span><span class="o">,</span> <span class="n">String</span> <span class="n">vertexB</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Sequential shortest path algorithm.</span>
+        <span class="c1">// ...</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Notice that because these calls are asynchronous, the client doesn’t need to
+wait for the <code class="highlighter-rouge">pathAB</code> result before making another request to get <code class="highlighter-rouge">pathYZ</code>. It
+is only later, where the <code class="highlighter-rouge">Path#toString()</code> methods are called that the client
+will need to wait. Ideally, the client has been able to do some more work in
+the mean time.</p>
+
+<p><br /></p>
+
+<h4 id="developed-using-standard-java-ides">Developed using Standard Java IDEs</h4>
+
+<p>@PaniniJ provides these (and many other) features by extending the Java compiler
+to write Java code for capsules themselves. The capsules wrap the capsule cores
+and manage their interactions in a thread-safe way.</p>
+
+<p>There are a number of rules that statically restrict how a capsule can be
+defined. Many of these rules are checked by our compiler plugin. If a check
+fails, the error is reported just like an ordinary Java compiler error.</p>
+
+<p>Our standards-compliant compiler plugin is well-supported by many standard Java
+tools: <code class="highlighter-rouge">javac</code>, Maven, Gradle, Eclipse, Netbeans, and IntelliJ IDEA. Often,
+adding @PaniniJ to your Java project is as simple as adding a JAR or a
 Maven-style dependency.</p>
 
-<h2 id="why">Why?</h2>
+<p>And one can use the advanced development features of these IDEs to develop
+@PaniniJ code, for example,</p>
+
+<ul>
+  <li>Jump-to-definition.</li>
+  <li>Contextual error messages (i.e. red-squigglies).</li>
+  <li>Profiling.</li>
+  <li>Interactive debugging.</li>
+</ul>
+
+<p><br /></p>
+
+<h4 id="motivations">Motivations</h4>
 
 <p>Existing concurrent programming practices leave practitioners with no choice but
 to program using unbridled concurrency mechanisms, and then find and remove
@@ -133,7 +220,9 @@ can write and reuse sequential code as-is. We work on increasing the class of
 concurrency errors that can be eliminated from capsule-oriented programs by
 construction.</p>
 
-<h2 id="goals">Goals</h2>
+<p><br /></p>
+
+<h4 id="goals">Goals</h4>
 
 <ul>
   <li><strong>Solve pervasive and oblivious interference problems:</strong> enable modular

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/pygments_themes/default.css">
+    <link rel="stylesheet" href="/css/paninij.css">
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+    <title>Master-Worker Pattern</title>
+  </head>
+
+  <body>
+
+    <div class="base-content container">
+    <main>
+<h1>Chapter 9. Master-Worker Pattern</h1>
+<h2 id="computing-the-constant-pi">Computing the constant Pi</h2>
+
+<p>To illustrate Panini’s new features in practice, consider the classic problem of
+computing the constant pi using a Monte Carlo approximation. The idea behind the
+method is that we use the ratio, R, between the area of an enclosing square and
+the area on an enclosed circle, R  = pi/4. We then proceed to randomly
+generating points within the above mentioned area of the square and count how
+many of them land in the enclosed circle. The ratio of points that land strictly
+withing the circle to the total number of points is a good approximation of the
+ratio R. We then multiply the result by 4 to get an estimate on the value of pi.</p>
+
+<h2 id="architecture-and-design">Architecture and design</h2>
+
+<p>In capsule-oriented programming better design leads to better implicit concurrency, i.e. better designed programs often run faster, so it is valuable to start off with the architecture and design.</p>
+
+<ol>
+  <li>
+    <p>Divide the problems into subproblems. In our case, the subproblems are:
+a. randomly generate a point and test if it’s in the boundary of the circle
+b. agreggate the results</p>
+  </li>
+  <li>
+    <p>The Panini programmer specifies a system as a collection of capsules and
+ordinary object-oriented classes. A capsule is an abstraction for
+decomposing a software into its parts and a design block is a mechanism for
+composing these parts together. So the first order of business is to come up
+with this capsule-oriented design. This involves creating capsules and
+assigning subtasks to these capsules.</p>
+  </li>
+  <li>
+    <p>Create capsules and assign responsibilities to capsules. In assigning
+responsibility follow the information-hiding principle. We should have a
+capsule that randomly generates points and tests whether or not they are
+within the circle. A master capsule that gathers the results from all
+generative capsules.</p>
+
+    <p>This suggests capsules: Pi, Worker. For convenience we will be creating a
+wrapper class Number that implicitely handles conversions from integers to
+doubles and back.</p>
+
+    <p><strong>Listing 9.1:</strong> <em>Declaration of our capsules</em></p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Pi</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span> <span class="o">}</span>
+<span class="n">capsule</span> <span class="nf">Worker</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+</code></pre>
+    </div>
+
+    <p>As you can see above, capsule Pi will be the one that receives command line
+parameters.</p>
+  </li>
+  <li>
+    <p>Integrate capsules to form a design block. We now know that this program
+would require one Pi capsule, and multiple workers. At this time, we can
+make a decision about how many workers we want in this program. In this
+particular case we settle on a fixed number of Worker capsules, 10.</p>
+
+    <p>Every capsule can have a design block, it effectively marks the capsule as a
+high level component that is composed out of other capsules. In our case the
+best choice would be to give the Pi capsule such a block. From the
+description of the problem we can see that the Pi capsule needs to know
+about the Worker capsules, but not the other way arround.</p>
+
+    <p>Let us look at the public interfaces of each capsule and the design block:</p>
+
+    <p><strong>Listing 9.2:</strong> <em>Public interfaces of the capsules</em></p>
+    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Worker</span> <span class="o">(</span><span class="kt">double</span> <span class="n">batchSize</span><span class="o">)</span> <span class="o">{</span>
+     <span class="c1">// Computes the number of points, from a total of batchSize,</span>
+     <span class="c1">// that fall within the area of the circle</span>
+    <span class="n">Number</span> <span class="nf">compute</span><span class="o">(</span><span class="kt">double</span> <span class="n">batchSize</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">capsule</span> <span class="nf">Pi</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">design</span> <span class="o">{</span>
+        <span class="n">Worker</span> <span class="n">workers</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+    <span class="o">}</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span> <span class="o">...</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+    </div>
+
+    <p>This declarative design block(lines 10-12) states that the program should
+have a set of 10 Worker capsules.</p>
+  </li>
+</ol>
+
+<h2 id="implementation">Implementation</h2>
+
+<h3 id="capsule-worker">Capsule Worker</h3>
+
+<p>The behavior of capsule Worker is fairly straightforward: generate a given
+number of points and count whether or not they fall within the circle.</p>
+
+<p>To allow other capsules to change its state, a capsule can provide capsule
+procedures, procedures for short. A capsule procedure is syntactically similar
+to methods in object-oriented languages, however, they are different
+semantically in two ways: first, a capsule procedures is by default public
+(although private helper procedures can be declared using the private keyword),
+and second a procedure invocation is guaranteed to be logically synchronous. In
+some cases, Panini may be able to run procedures in parallel to improve
+parallelism in Panini programs. In this particular case the only state of our
+capsule is the random number generator.</p>
+
+<p><strong>Listing 9.3:</strong> <em>Public interfaces of the capsules</em></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Worker</span> <span class="o">()</span> <span class="o">{</span>
+  <span class="n">Random</span> <span class="n">prng</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span> <span class="o">();</span>
+
+  <span class="n">Number</span> <span class="nf">compute</span><span class="o">(</span><span class="kt">double</span> <span class="n">num</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Number</span> <span class="n">_circleCount</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Number</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">double</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">num</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="kt">double</span> <span class="n">x</span> <span class="o">=</span> <span class="n">prng</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">();</span>
+      <span class="kt">double</span> <span class="n">y</span> <span class="o">=</span> <span class="n">prng</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">();</span>
+      <span class="k">if</span> <span class="o">((</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="n">_circleCount</span><span class="o">.</span><span class="na">incr</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">_circleCount</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<p>The implementation of the compute procedure should be easily understood by any
+Java programmer, it has the same syntax. As for the semantics, a call to a
+non-void external capsule procedure immediately returns a “future” value, while
+the procedure that is called runs concurrently. That value behaves exactly like
+normal values, so you won’t need to modify your programs to make adjustments for
+it. When you need the actual value, and if the called procedure has completed
+running execution proceeds as usual, otherwise execution is blocked until the
+called procedure completes running.</p>
+
+<h3 id="capsule-pi">Capsule Pi</h3>
+
+<p>Line 5 declares a procedure run, every capsule can optionally declare such a
+method and it is implicitely invoked at the start of the program.</p>
+
+<p><strong>Listing 9.4:</strong> <em>Public interfaces of the capsules</em></p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Worker</span> <span class="o">()</span> <span class="o">{</span> <span class="cm">/* ... */</span> <span class="o">}</span>
+<span class="n">capsule</span> <span class="nf">Pi</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="n">Worker</span> <span class="n">workers</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+  <span class="o">}</span>
+  <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">args</span><span class="o">.</span><span class="na">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Usage: panini Pi [sample size], try several hundred thousand samples."</span><span class="o">);</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">double</span> <span class="n">totalSamples</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
+    <span class="kt">double</span> <span class="n">startTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+    <span class="n">Number</span><span class="o">[]</span> <span class="n">results</span> <span class="o">=</span> <span class="n">foreach</span><span class="o">(</span><span class="n">Worker</span> <span class="nl">w:</span> <span class="n">workers</span><span class="o">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="na">compute</span><span class="o">(</span><span class="n">totalSamples</span><span class="o">/</span><span class="n">workers</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+
+    <span class="kt">double</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">workers</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+      <span class="n">total</span> <span class="o">+=</span> <span class="n">results</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">value</span><span class="o">();</span>
+
+    <span class="kt">double</span> <span class="n">pi</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">total</span> <span class="o">/</span> <span class="n">totalSamples</span><span class="o">;</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Pi : "</span> <span class="o">+</span> <span class="n">pi</span><span class="o">);</span>
+    <span class="kt">double</span> <span class="n">endTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Time to compute Pi using "</span> <span class="o">+</span> <span class="n">totalSamples</span> <span class="o">+</span>
+                       <span class="s">" samples was:"</span> <span class="o">+</span> <span class="o">(</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="o">)</span> <span class="o">+</span> <span class="s">"ms."</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span><span class="w">
+</span></pre></td></tr></tbody></table></code></pre></figure>
+
+<h2 id="implicit-concurrency">Implicit concurrency</h2>
+
+<p>The implicit concurrency in this example is on line 12 in the capsule Pi, where
+calling an external capsule procedure immediately returns, the foreach is simply
+a sugar for calling the procedure on a capsule and storing the result in a cell
+of an array, one capsule at a time.</p>
+
+<p>On lines 14-15, each indexing of the results array might wind up blocking due to
+the fact that the result has not been computed up until that point.</p>
+
+<p>When it is safe to exploit these sources of implicit concurrency, Panini
+compiler will automatically introduce parallelism to speedup this program
+without intervention from the programmer.</p>
+
+</main>
+
+    </div>
+
+    <!-- Adapted from http://tholman.com/github-corners/ -->
+<a href="https://github.com/paninij/paninij" class="github-corner hidden-xs-down" aria-label="View source on Github">
+  <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#9F211A; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
