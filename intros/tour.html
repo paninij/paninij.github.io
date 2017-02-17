@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -118,12 +117,17 @@ easier to understand than code relying on traditional Java threads.</p>
 <code class="highlighter-rouge">@Capsule</code> annotation to a Java class, that class can be interpreted as a
 capsule.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
     <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello, World."</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>We call this class <em>the capsule’s core</em>. It is how one can specify</p>
@@ -146,7 +150,30 @@ calls, we say that one capsule <em>invokes a procedure</em> on another capsule.<
 <p>Here is an example where a <code class="highlighter-rouge">HelloWorld</code> capsule invokes the <code class="highlighter-rouge">work()</code> procedure
 on a <code class="highlighter-rouge">Worker</code> instance:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td class="code"><pre><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
     <span class="c1">// Declare the existence of another capsule.</span>
     <span class="nd">@Local</span> <span class="n">Worker</span> <span class="n">w</span><span class="o">;</span>
 
@@ -170,7 +197,8 @@ on a <code class="highlighter-rouge">Worker</code> instance:</p>
         <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>Additionally, what appears to be an inter-capsule return values is

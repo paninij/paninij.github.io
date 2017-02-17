@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -106,7 +105,32 @@
   <h2>Example: Map Reduce</h2>
   <div class="row">
     <div class="col-sm-12">
-      <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+      <div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
 <span class="kd">class</span> <span class="nc">SupervisorCore</span> <span class="o">{</span>
     <span class="kd">static</span> <span class="kd">final</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
     <span class="kd">static</span> <span class="kd">final</span> <span class="n">R</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
@@ -132,10 +156,20 @@
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
 <span class="kd">class</span> <span class="nc">MapperCore</span> <span class="o">{</span>
     <span class="nd">@Imported</span> <span class="n">Reducer</span> <span class="n">reducers</span><span class="o">;</span>
     <span class="nd">@Future</span> <span class="n">Void</span> <span class="nf">map</span><span class="o">(</span><span class="n">Items</span> <span class="n">w</span><span class="o">)</span> <span class="o">{</span>
@@ -145,10 +179,18 @@
         <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="nd">@Capsule</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
 <span class="kd">class</span> <span class="nc">ReducerCore</span> <span class="o">{</span>
     <span class="kd">private</span> <span class="n">State</span> <span class="n">s</span><span class="o">;</span>
     <span class="n">Result</span> <span class="nf">reduce</span><span class="o">()</span> <span class="o">{</span>
@@ -156,7 +198,8 @@
         <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
     </div>

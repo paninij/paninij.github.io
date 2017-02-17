@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -118,7 +117,16 @@ communicate with each other.</p>
 
 <h3 id="consolecorejava">ConsoleCore.java</h3>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
 
 <span class="nd">@Capsule</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConsoleCore</span> <span class="o">{</span>
@@ -128,7 +136,8 @@ communicate with each other.</p>
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The Console capsule has one simple procedure called write. It simply prints out
@@ -136,7 +145,23 @@ to the System.out stream.</p>
 
 <h3 id="greetercorejava">GreeterCore.java</h3>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
 
 <span class="nd">@Capsule</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreeterCore</span> <span class="o">{</span>
@@ -153,7 +178,8 @@ to the System.out stream.</p>
     <span class="n">c</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The capsule Greeter has a field of type Console that is annotated with the
@@ -166,7 +192,26 @@ is passed as a parameter.</p>
 
 <h3 id="helloworldcorejava">HelloWorldCore.java</h3>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">org.paninij.lang.*</span><span class="o">;</span>
 
 <span class="nd">@Root</span>
 <span class="nd">@Capsule</span>
@@ -186,7 +231,8 @@ is passed as a parameter.</p>
     <span class="n">CapsuleSystem</span><span class="o">.</span><span class="na">start</span><span class="o">(</span><span class="n">HelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The active capsule HelloWorld holds a reference to the passive capsules

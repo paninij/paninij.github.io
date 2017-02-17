@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -26,8 +25,7 @@ capsule, of type Distributor, distributes the computation work among the worker
 capsules.</p>
 
 <p><strong>Listing 12.1:</strong> <em>Fibonacci Example</em></p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
 3
 4
@@ -143,8 +141,10 @@ capsules.</p>
     <span class="n">Number</span> <span class="n">left</span><span class="o">;</span> <span class="n">Number</span> <span class="n">right</span><span class="o">;</span>
     <span class="n">Sum</span><span class="o">(</span><span class="n">Number</span> <span class="n">left</span><span class="o">,</span> <span class="n">Number</span> <span class="n">right</span><span class="o">){</span> <span class="kd">super</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span> <span class="k">this</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span> <span class="k">this</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span> <span class="o">}</span>
     <span class="nd">@Override</span> <span class="kt">int</span> <span class="nf">v</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">left</span><span class="o">.</span><span class="na">v</span><span class="o">()+</span><span class="n">right</span><span class="o">.</span><span class="na">v</span><span class="o">();</span> <span class="o">}</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
 <p>The system capsule of Fibonacci, lines 32–46, declares a system design with 10
 Fibworker capsule instances, line 34, and 1 Distributor capsule instance,

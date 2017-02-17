@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -96,12 +95,17 @@ these responsibility behind interfaces of separate capsules. Finally, capsule
 Asteroids would encapsulate the design decisions related to controller logic.</p>
 
 <p><strong>Listing 4.1:</strong> Design skeleton for Asteroids</p>
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Game</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">UI</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Input</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Asteroids</span> <span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This decision, to implement these components using the capsule abstraction,
@@ -141,12 +145,17 @@ use this knowledge to refine our architecture and design.</p>
 
 <p><strong>Listing 4.2:</strong> <em>Interconnection between Capsules in Design for Asteroids</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Game</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">UI</span><span class="o">(</span><span class="n">Game</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Input</span><span class="o">(</span><span class="n">Ship</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Asteroids</span> <span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The third line says that the UI capsule could be connected with an external Game
@@ -168,7 +177,16 @@ feasible.</p>
 
 <p><strong>Listing 4.3:</strong> <em>Complete Capsule-oriented Design for Asteroids</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Game</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">UI</span><span class="o">(</span><span class="n">Game</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Input</span><span class="o">(</span><span class="n">Ship</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
@@ -178,7 +196,8 @@ feasible.</p>
     <span class="n">ui</span><span class="o">(</span><span class="n">g</span><span class="o">);</span> <span class="n">i</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>Lines six to nine are the new parts of the design for this system. They define
@@ -203,8 +222,9 @@ code above in a file Asteroids.java and compile it using the Panini compiler.</p
 
 <p>To compile this program simply run:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panc Asteroids.java
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ panc Asteroids.java
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This program is not yet executable, but with a small change we can make it
@@ -212,7 +232,19 @@ executable by adding a run procedure in the Asteroids capsule.</p>
 
 <p><strong>Listing 4.4:</strong> <em>Executable Capsule-oriented Design for Asteroids</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Ship</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Game</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">UI</span><span class="o">(</span><span class="n">Game</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Input</span><span class="o">(</span><span class="n">Ship</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
@@ -225,19 +257,22 @@ executable by adding a run procedure in the Asteroids capsule.</p>
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"TODO: fill in implementation"</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>To compile this program simply run:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panc Asteroids.java
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ panc Asteroids.java
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>You can then run this panini program with:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panini Asteroids
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ panini Asteroids
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <h2 id="implementation">Implementation</h2>
@@ -259,11 +294,15 @@ Other capsule instances may not directly access it.</p>
 
 <p><strong>Listing 4.5:</strong> <em>Capsule Ship and its States</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
   <span class="kt">short</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
   <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The listing above shows two states on lines 2 and 3. You could also write state
@@ -271,7 +310,14 @@ initializers to give them initial values, or you could write a capsule
 initializer as shown in the listing below.</p>
 
 <p><strong>Listing 4.6:</strong> <em>Capsule Ship with an Initializer</em></p>
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
   <span class="kt">short</span> <span class="n">state</span><span class="o">;</span>
   <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
   <span class="o">=&gt;</span> <span class="o">{</span>
@@ -279,7 +325,8 @@ initializer as shown in the listing below.</p>
     <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>To allow other capsules to change its state, a capsule can provide capsule
@@ -293,7 +340,21 @@ concurrency in Panini programs. Several example procedures of the capsule Ship
 are shown below.</p>
 
 <p><strong>Listing 4.7:</strong> <em>Complete Implementation of the Capsule Ship</em></p>
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Ship</span> <span class="o">{</span>
   <span class="kt">short</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
   <span class="kt">void</span> <span class="nf">die</span><span class="o">()</span> <span class="o">{</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span> <span class="o">}</span>
   <span class="kt">void</span> <span class="nf">fire</span><span class="o">()</span> <span class="o">{</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="o">}</span>
@@ -308,7 +369,8 @@ are shown below.</p>
   <span class="kt">void</span> <span class="nf">moveLeft</span><span class="o">()</span> <span class="o">{</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">)</span> <span class="n">x</span><span class="o">--;</span> <span class="o">}</span>
   <span class="kt">void</span> <span class="nf">moveRight</span><span class="o">()</span> <span class="o">{</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span><span class="o">&lt;</span><span class="mi">10</span><span class="o">)</span> <span class="n">x</span><span class="o">++;</span> <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p><em>Concurrency concerns in Ship’s Design.</em> Recall from our previous discussion
@@ -332,7 +394,25 @@ autonomous behavior, it can be executed.</p>
 
 <p><strong>Listing 4.8:</strong> <em>Capsule Asteroids</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Asteroids</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Asteroids</span> <span class="o">{</span>
   <span class="n">design</span> <span class="o">{</span>
     <span class="n">Ship</span> <span class="n">s</span><span class="o">;</span> <span class="n">UI</span> <span class="n">ui</span><span class="o">;</span> <span class="n">Game</span> <span class="n">g</span><span class="o">;</span> <span class="n">Input</span> <span class="n">i</span><span class="o">;</span>
     <span class="n">ui</span><span class="o">(</span><span class="n">l</span><span class="o">);</span> <span class="n">i</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
@@ -351,7 +431,8 @@ autonomous behavior, it can be executed.</p>
     <span class="n">ui</span><span class="o">.</span><span class="na">endGame</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The execution of this program begins by allocating memory for all capsule
@@ -377,7 +458,19 @@ invoked on the capsule instance s.</p>
 
 <p><strong>Listing 4.9:</strong> <em>Capsule Input in Asteroids</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Input</span> <span class="o">(</span><span class="n">Ship</span> <span class="n">ship</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Input</span> <span class="o">(</span><span class="n">Ship</span> <span class="n">ship</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
     <span class="k">try</span> <span class="o">{</span>
       <span class="k">while</span><span class="o">(</span><span class="n">ship</span><span class="o">.</span><span class="na">alive</span><span class="o">())</span> <span class="o">{</span>
@@ -390,7 +483,8 @@ invoked on the capsule instance s.</p>
     <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span> <span class="cm">/* ... */</span> <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This implementation continually checks for user input and directs the ship to
@@ -443,14 +537,16 @@ executable in your path, you can compile the program by simply running:</p>
 
 <p>To compile this program simply run:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panc Asteroids.java
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ panc Asteroids.java
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>You can then run this panini program with:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panini Asteroids
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre>$ panini Asteroids
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>Where Asteroids is the name of the closed capsule that contains other capsule

@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -27,18 +26,20 @@ method is that we use the ratio, R, between the area of an enclosing square and
 the area on an enclosed circle, R  = pi/4. We then proceed to randomly
 generating points within the above mentioned area of the square and count how
 many of them land in the enclosed circle. The ratio of points that land strictly
-withing the circle to the total number of points is a good approximation of the
+within the circle to the total number of points is a good approximation of the
 ratio R. We then multiply the result by 4 to get an estimate on the value of pi.</p>
 
 <h2 id="architecture-and-design">Architecture and design</h2>
 
-<p>In capsule-oriented programming better design leads to better implicit concurrency, i.e. better designed programs often run faster, so it is valuable to start off with the architecture and design.</p>
+<p>In capsule-oriented programming better design leads to better implicit
+concurrency, i.e. better designed programs often run faster, so it is valuable
+to start off with the architecture and design.</p>
 
 <ol>
   <li>
     <p>Divide the problems into subproblems. In our case, the subproblems are:
 a. randomly generate a point and test if it’s in the boundary of the circle
-b. agreggate the results</p>
+b. aggregate the results</p>
   </li>
   <li>
     <p>The Panini programmer specifies a system as a collection of capsules and
@@ -56,13 +57,15 @@ within the circle. A master capsule that gathers the results from all
 generative capsules.</p>
 
     <p>This suggests capsules: Pi, Worker. For convenience we will be creating a
-wrapper class Number that implicitely handles conversions from integers to
+wrapper class Number that implicitly handles conversions from integers to
 doubles and back.</p>
 
     <p><strong>Listing 9.1:</strong> <em>Declaration of our capsules</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Pi</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span> <span class="o">}</span>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Pi</span><span class="o">(</span><span class="n">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span> <span class="o">}</span>
 <span class="n">capsule</span> <span class="nf">Worker</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
     </div>
 
     <p>As you can see above, capsule Pi will be the one that receives command line
@@ -78,12 +81,23 @@ particular case we settle on a fixed number of Worker capsules, 10.</p>
 high level component that is composed out of other capsules. In our case the
 best choice would be to give the Pi capsule such a block. From the
 description of the problem we can see that the Pi capsule needs to know
-about the Worker capsules, but not the other way arround.</p>
+about the Worker capsules, but not the other way around.</p>
 
     <p>Let us look at the public interfaces of each capsule and the design block:</p>
 
     <p><strong>Listing 9.2:</strong> <em>Public interfaces of the capsules</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Worker</span> <span class="o">(</span><span class="kt">double</span> <span class="n">batchSize</span><span class="o">)</span> <span class="o">{</span>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Worker</span> <span class="o">(</span><span class="kt">double</span> <span class="n">batchSize</span><span class="o">)</span> <span class="o">{</span>
      <span class="c1">// Computes the number of points, from a total of batchSize,</span>
      <span class="c1">// that fall within the area of the circle</span>
     <span class="n">Number</span> <span class="nf">compute</span><span class="o">(</span><span class="kt">double</span> <span class="n">batchSize</span><span class="o">)</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
@@ -95,7 +109,8 @@ about the Worker capsules, but not the other way arround.</p>
     <span class="o">}</span>
     <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span> <span class="o">...</span> <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
     </div>
 
     <p>This declarative design block(lines 10-12) states that the program should
@@ -121,8 +136,7 @@ parallelism in Panini programs. In this particular case the only state of our
 capsule is the random number generator.</p>
 
 <p><strong>Listing 9.3:</strong> <em>Public interfaces of the capsules</em></p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
 3
 4
@@ -146,8 +160,10 @@ capsule is the random number generator.</p>
     <span class="o">}</span>
     <span class="k">return</span> <span class="n">_circleCount</span><span class="o">;</span>
   <span class="o">}</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
 <p>The implementation of the compute procedure should be easily understood by any
 Java programmer, it has the same syntax. As for the semantics, a call to a
@@ -161,11 +177,10 @@ called procedure completes running.</p>
 <h3 id="capsule-pi">Capsule Pi</h3>
 
 <p>Line 5 declares a procedure run, every capsule can optionally declare such a
-method and it is implicitely invoked at the start of the program.</p>
+method and it is implicitly invoked at the start of the program.</p>
 
 <p><strong>Listing 9.4:</strong> <em>Public interfaces of the capsules</em></p>
-
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
 3
 4
@@ -217,8 +232,10 @@ method and it is implicitely invoked at the start of the program.</p>
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Time to compute Pi using "</span> <span class="o">+</span> <span class="n">totalSamples</span> <span class="o">+</span>
                        <span class="s">" samples was:"</span> <span class="o">+</span> <span class="o">(</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="o">)</span> <span class="o">+</span> <span class="s">"ms."</span><span class="o">);</span>
   <span class="o">}</span>
-<span class="o">}</span><span class="w">
-</span></pre></td></tr></tbody></table></code></pre></figure>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
 <h2 id="implicit-concurrency">Implicit concurrency</h2>
 

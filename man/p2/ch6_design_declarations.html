@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -30,19 +29,31 @@ of capsule instances of fixed length can also be declared.</p>
 
 <p><strong>Listing 6.1:</strong> <em>Design Declaration in Bank Capsule</em></p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Bank</span> <span class="o">{</span>
- <span class="n">design</span> <span class="o">{</span>
-  <span class="cm">/* these two lines specify the capsule instances
-     that will be participating in the design */</span>
-  <span class="n">BankAccount</span> <span class="n">account</span><span class="o">;</span>
-  <span class="n">BankClient</span> <span class="n">client</span><span class="o">;</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Bank</span> <span class="o">{</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="cm">/* These two lines specify the capsule instances
+       that will be participating in the design. */</span>
+    <span class="n">BankAccount</span> <span class="n">account</span><span class="o">;</span>
+    <span class="n">BankClient</span> <span class="n">client</span><span class="o">;</span>
 
-  <span class="cm">/* this line describes how the capsule instances
-     are connected with each other */</span>
-  <span class="n">client</span><span class="o">(</span><span class="n">account</span><span class="o">);</span>
- <span class="o">}</span>
+    <span class="cm">/* This line describes how the capsule instances
+       are connected with each other */</span>
+      <span class="n">client</span><span class="o">(</span><span class="n">account</span><span class="o">);</span>
+  <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This design declaration spans lines 2-11. On line 5 and 6 this design
@@ -65,13 +76,19 @@ instances can only be wired or connected to other capsules.</p>
 
 <p>Let us look at a BankClient capsule that wants to make use of a BankAccount:</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="cm">/* the BankClient depends on the signature BankAccountSig */</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="cm">/* the BankClient depends on the signature BankAccountSig */</span>
 <span class="n">capsule</span> <span class="nf">BankClient</span> <span class="o">(</span><span class="n">BankAccountSig</span> <span class="n">account</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
     <span class="n">account</span><span class="o">.</span><span class="na">withdraw</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>Two checks are performed on the design declaration to determine if all capsule
@@ -81,7 +98,15 @@ instances are being properly wired.</p>
 example, in the following capsule-oriented program the wiring declaration on
 line 6 is illegal.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">Capsule</span> <span class="nf">C</span> <span class="o">(</span><span class="n">C</span> <span class="n">c</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">){}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td class="code"><pre><span class="n">Capsule</span> <span class="nf">C</span> <span class="o">(</span><span class="n">C</span> <span class="n">c</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">){}</span>
 <span class="n">capsule</span> <span class="n">Test</span> <span class="o">{</span>
  <span class="n">design</span> <span class="o">{</span>
   <span class="n">C</span> <span class="n">c</span><span class="o">;</span>
@@ -90,22 +115,31 @@ line 6 is illegal.</p>
   <span class="n">c</span><span class="o">(</span><span class="n">c1</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>  <span class="c1">//legal</span>
  <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The second check ensures that any capsule with arguments are properly wired. For
 example, in the following capsule-oriented program the wiring declarations are
 incomplete.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">Capsule</span> <span class="n">C</span><span class="o">{}</span>
-<span class="n">Capsule</span> <span class="nf">D</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">){}</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">C</span> <span class="o">{}</span>
+<span class="n">capsule</span> <span class="nf">D</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{}</span>
 <span class="n">capsule</span> <span class="n">Test</span> <span class="o">{</span>
- <span class="n">design</span> <span class="o">{</span>
-  <span class="n">C</span> <span class="n">c</span><span class="o">;</span>
-  <span class="n">D</span> <span class="n">d</span><span class="o">;</span>
- <span class="o">}</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="n">C</span> <span class="n">c</span><span class="o">;</span>
+    <span class="n">D</span> <span class="n">d</span><span class="o">;</span>
+  <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>So the compiler will report an error error: Capsule instance d may not be
@@ -117,17 +151,27 @@ integer value and it has not been provided.</p>
 <p>In effort to allow for even further code reuse, capsule arrays may be
 instantiated. The syntax is the same as Java’s.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Bank</span><span class="o">{</span>
- <span class="n">design</span> <span class="o">{</span>
-  <span class="n">BankAccount</span> <span class="n">accounts</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>
-  <span class="n">BankClient</span> <span class="n">client</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Bank</span><span class="o">{</span>
+  <span class="n">design</span> <span class="o">{</span>
+    <span class="n">BankAccount</span> <span class="n">accounts</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>
+    <span class="n">BankClient</span> <span class="n">client</span><span class="o">[</span><span class="mi">5</span><span class="o">];</span>
 
-  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">accounts</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-    <span class="n">client</span><span class="o">[</span><span class="n">i</span><span class="o">](</span><span class="n">accounts</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">accounts</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">client</span><span class="o">[</span><span class="n">i</span><span class="o">](</span><span class="n">accounts</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+    <span class="o">}</span>
   <span class="o">}</span>
- <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <h2 id="topology-operators-in-design-declarations">Topology operators in design declarations</h2>
@@ -143,17 +187,22 @@ capsules.</p>
 of arguments. For example, if <code class="highlighter-rouge">cs</code> is an array of capsule instances, of length n
 writing</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">wireall</span><span class="o">(</span><span class="n">cs</span><span class="o">,</span> <span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
-</code></pre>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">wireall</span><span class="o">(</span><span class="n">cs</span><span class="o">,</span> <span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>is the same as writing the following n wiring declarations.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">cs</span><span class="o">[</span><span class="mi">0</span><span class="o">](</span><span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="n">cs</span><span class="o">[</span><span class="mi">0</span><span class="o">](</span><span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
 <span class="n">cs</span><span class="o">[</span><span class="mi">1</span><span class="o">](</span><span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
 <span class="o">...</span>
 <span class="n">cs</span><span class="o">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">](</span><span class="n">arg1</span><span class="o">,</span> <span class="n">arg2</span><span class="o">,</span> <span class="o">...);</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The ring operator connects each element ’N’ in a capsule array to element ’N+1’.
@@ -161,40 +210,49 @@ It also connects the last element in the capsule array to the first element in
 the array. For example, if cs is an array of capsule instances, of length n,
 then writing</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">ring</span><span class="o">(</span><span class="n">cs</span><span class="o">);</span>
-<span class="err">```</span> <span class="n">java</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">ring</span><span class="o">(</span><span class="n">cs</span><span class="o">);</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<span class="n">is</span> <span class="n">the</span> <span class="n">same</span> <span class="n">as</span> <span class="n">writing</span> <span class="n">the</span> <span class="n">following</span> <span class="n">n</span> <span class="n">wiring</span> <span class="n">declarations</span><span class="o">.</span>
+<p>is the same as writing the following n wiring declarations.</p>
 
-<span class="err">```</span> <span class="n">java</span>
-<span class="n">cs</span><span class="o">[</span><span class="mi">0</span><span class="o">](</span><span class="n">cs</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="n">cs</span><span class="o">[</span><span class="mi">0</span><span class="o">](</span><span class="n">cs</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
 <span class="n">cs</span><span class="o">[</span><span class="mi">1</span><span class="o">](</span><span class="n">cs</span><span class="o">[</span><span class="mi">2</span><span class="o">]);</span>
 <span class="o">...</span>
 <span class="n">cs</span><span class="o">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">](</span><span class="n">cs</span><span class="o">[</span><span class="mi">0</span><span class="o">]);</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The <code class="highlighter-rouge">assoc</code> (short for associate) operator connects elements of two capsule
 arrays from a starting index i, for a l items. For example, if cs and ds are
 arrays of capsule instances of length &gt;=4, then writing</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">assoc</span><span class="o">(</span><span class="n">cs</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="n">ds</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-</code></pre>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">assoc</span><span class="o">(</span><span class="n">cs</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="n">ds</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>is the same as writing the following two wiring declarations.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">cs</span><span class="o">[</span><span class="mi">3</span><span class="o">](</span><span class="n">ds</span><span class="o">[</span><span class="mi">3</span><span class="o">],</span> <span class="n">args</span><span class="o">);</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2</pre></td><td class="code"><pre><span class="n">cs</span><span class="o">[</span><span class="mi">3</span><span class="o">](</span><span class="n">ds</span><span class="o">[</span><span class="mi">3</span><span class="o">],</span> <span class="n">args</span><span class="o">);</span>
 <span class="n">cs</span><span class="o">[</span><span class="mi">4</span><span class="o">](</span><span class="n">ds</span><span class="o">[</span><span class="mi">4</span><span class="o">],</span> <span class="n">args</span><span class="o">);</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The <code class="highlighter-rouge">star</code> operator connects a single capsule instance to all elements of a
 capsule array. For example, if c is a capsule instance and cs is an array of
 capsule instances following wires c to all elements of ds.</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">star</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">cs</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
-</code></pre>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">star</span><span class="o">(</span><span class="n">c</span><span class="o">,</span> <span class="n">cs</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 </main>

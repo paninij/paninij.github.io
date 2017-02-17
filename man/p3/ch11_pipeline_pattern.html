@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -40,7 +39,15 @@ the running average, total, minimum and maximum price of a stock in a day.</p>
 
 <h2 id="architecture-and-design">Architecture and design</h2>
 
-<p>In capsule-oriented programming better design leads to better implicit concurrency, i.e. better designed programs often run faster, so it is valuable to start off with the architecture and design. As an overview, the Panini programmer specifies a design block as a collection of capsules, signatures and ordinary object-oriented classes. A capsule is an abstraction for decomposing a software into its parts and a design block is a mechanism for composing these parts together. So the first order of business is to come up with this capsule-oriented design. This involves creating capsules and assigning subtasks to these capsules. To start off:</p>
+<p>In capsule-oriented programming better design leads to better implicit
+concurrency, i.e. better designed programs often run faster, so it is valuable
+to start off with the architecture and design. As an overview, the Panini
+programmer specifies a design block as a collection of capsules, signatures and
+ordinary object-oriented classes. A capsule is an abstraction for decomposing a
+software into its parts and a design block is a mechanism for composing these
+parts together. So the first order of business is to come up with this
+capsule-oriented design. This involves creating capsules and assigning subtasks
+to these capsules. To start off:</p>
 
 <ol>
   <li>
@@ -61,13 +68,19 @@ have to be implemented by any capsules that wants to implement it, the
 semantics are similar to that of Java interfaces.</p>
 
     <p><strong>Listing 11.1:</strong> <em>Signature of any of all our pipeline stages</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">signature</span> <span class="n">Stage</span> <span class="o">{</span>
-    <span class="c1">// handles pipeline stage input</span>
-    <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">long</span> <span class="n">n</span><span class="o">);</span>
-    <span class="c1">// reports the current state of the pipeline stage</span>
-    <span class="kt">void</span> <span class="nf">report</span><span class="o">();</span>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="n">signature</span> <span class="n">Stage</span> <span class="o">{</span>
+  <span class="cm">/** Handles pipeline stage input. */</span>
+  <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">long</span> <span class="n">n</span><span class="o">);</span>
+  <span class="cm">/** reports the current state of the pipeline stage */</span>
+  <span class="kt">void</span> <span class="nf">report</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
     </div>
 
     <p>Now that we have a signature we can create the capsules that represent the
@@ -75,21 +88,28 @@ pipeline stages. Each of the stages that are interchangeable expect a Stage
 parameter so that they can be composed freely:</p>
 
     <p><strong>Listing 11.2:</strong> <em>Definition of concrete capsules</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Average</span><span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Average</span><span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
 <span class="n">capsule</span> <span class="nf">Sum</span><span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
 <span class="n">capsule</span> <span class="nf">Min</span><span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
 <span class="n">capsule</span> <span class="nf">Max</span><span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
-<span class="c1">//we create an additional stage that is used to seal off the pipeline</span>
+<span class="cm">/** An additional stage used to seal off the pipeline. */</span>
 <span class="n">capsule</span> <span class="nf">Sink</span><span class="o">()</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{...}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
     </div>
 
     <p>And the only capsule left to define is the one that feeds numbers into the
 pipeline:</p>
 
     <p><strong>Listing 11.3:</strong> <em>Pipeline capsule</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Pipeline</span><span class="o">(){...}</span>
-</code></pre>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Pipeline</span><span class="o">()</span> <span class="o">{...}</span>
+</pre></td></tr></tbody></table>
+</div>
     </div>
   </li>
   <li>
@@ -99,22 +119,29 @@ and in any way we would want to. For no reason other than simply
 demonstrating everything we will use one capsule of each.</p>
 
     <p><strong>Listing 11.4:</strong> <em>Definition of design block</em></p>
-    <div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Pipeline</span><span class="o">()</span> <span class="o">{</span>
+    <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Pipeline</span><span class="o">()</span> <span class="o">{</span>
   <span class="n">design</span> <span class="o">{</span>
     <span class="n">Average</span> <span class="n">avg</span><span class="o">;</span> <span class="n">Sum</span> <span class="n">sum</span><span class="o">;</span> <span class="n">Min</span> <span class="n">min</span><span class="o">;</span> <span class="n">Max</span> <span class="n">max</span><span class="o">;</span> <span class="n">Sink</span> <span class="n">sink</span><span class="o">;</span>
     <span class="n">avg</span><span class="o">(</span><span class="n">sum</span><span class="o">);</span> <span class="n">sum</span><span class="o">(</span><span class="n">min</span><span class="o">);</span> <span class="n">min</span><span class="o">(</span><span class="n">max</span><span class="o">);</span> <span class="n">max</span><span class="o">(</span><span class="n">snk</span><span class="o">);</span> <span class="n">sink</span><span class="o">(</span><span class="n">num</span><span class="o">);</span>
   <span class="o">}</span>
   <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{...}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
     </div>
 
     <p>Every capsule can have a design block, it effectively marks the capsule as a
 high level component that is composed out of other capsules. In our case,
 the best choice would be to give the Pipeline capsule such a block. This
 declarative design block (lines 2-5) declares one of each Stage capsule
-types (line 3). On line 4 we link each pipeline stage in the order: Average �
-Sum � Min � Max � Sink.</p>
+types (line 3). On line 4 we link each pipeline stage in the order: Average
+→ Sum → Min → Max → Sink.</p>
   </li>
 </ol>
 
@@ -122,13 +149,63 @@ Sum � Min � Max � Sink.</p>
 
 <h3 id="capsules-implementing-stage">Capsules implementing Stage</h3>
 
-<p>The behaviour of these capsules is fairly straightforward. Every time the
-consume is called they accumulate state and then call the consume procedure on
+<p>The behavior of these capsules is fairly straightforward. Every time <code class="highlighter-rouge">consume()</code>
+is called, they accumulate state and then call the <code class="highlighter-rouge">consume()</code> procedure on
 the next capsule (line 4) in the pipeline. They behave in a similar manner for
-the report procedure as well.</p>
+the <code class="highlighter-rouge">report()</code> procedure as well.</p>
 
 <p><strong>Listing 11.5:</strong> <em>Implementations of the pipeline stages</em></p>
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Sum</span> <span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Sum</span> <span class="o">(</span><span class="n">Stage</span> <span class="n">next</span><span class="o">)</span> <span class="kd">implements</span> <span class="n">Stage</span> <span class="o">{</span>
     <span class="kt">long</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
     <span class="kt">void</span> <span class="nf">consume</span><span class="o">(</span><span class="kt">long</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">next</span><span class="o">.</span><span class="na">consume</span><span class="o">(</span><span class="n">n</span><span class="o">);</span>
@@ -163,7 +240,7 @@ the report procedure as well.</p>
 
     <span class="kt">void</span> <span class="nf">report</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">next</span><span class="o">.</span><span class="na">report</span><span class="o">();</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Max␣of␣numbers␣was␣"</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">"."</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Max of numbers was "</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">"."</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
@@ -175,11 +252,12 @@ the report procedure as well.</p>
 
     <span class="kt">void</span> <span class="nf">report</span><span class="o">()</span> <span class="o">{</span>
         <span class="k">if</span> <span class="o">(</span><span class="n">count</span> <span class="o">!=</span> <span class="n">num</span><span class="o">)</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"count␣should␣be:␣"</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">";␣but␣was:␣"</span> <span class="o">+</span> <span class="n">count</span><span class="o">);</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Successful␣"</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">"␣runs!!"</span><span class="o">);</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"count should be: "</span> <span class="o">+</span> <span class="n">num</span> <span class="o">+</span> <span class="s">"; but was: "</span> <span class="o">+</span> <span class="n">count</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Successful "</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">" runs!!"</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The implementation of the compute procedures should be easily understood by any
@@ -195,7 +273,23 @@ called procedure completes running.</p>
 declare such a method and it is implicitely invoked at the start of the program.</p>
 
 <p><strong>Listing 11.6:</strong> <em>Implementation of Pipeline</em></p>
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="nf">Pipeline</span> <span class="o">()</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="nf">Pipeline</span> <span class="o">()</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">500</span><span class="o">;</span>
 
     <span class="n">design</span> <span class="o">{</span>
@@ -212,7 +306,8 @@ declare such a method and it is implicitely invoked at the start of the program.
         <span class="n">avg</span><span class="o">.</span><span class="na">report</span><span class="o">();</span>
     <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The execution of this program begins by allocating memory for all capsule

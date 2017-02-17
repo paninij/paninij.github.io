@@ -1,0 +1,23 @@
+@import url("pygments_themes/default.css");
+div.highlight {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 0.4rem;
+  font-size: 0.8rem;
+  font-family: monospace;
+  overflow: auto;
+  margin-bottom: 1rem; }
+  div.highlight pre.lineno {
+    display: none; }
+  div.highlight pre {
+    margin-bottom: 0rem; }
+
+div.code-with-line-numbers div.highlight pre.lineno {
+  display: block;
+  padding-right: 0.7rem;
+  margin-right: 0.7rem;
+  color: #aaa;
+  border-radius: 0;
+  border: none;
+  border-right: solid 1px;
+  word-wrap: normal; }

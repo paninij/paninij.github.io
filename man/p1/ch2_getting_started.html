@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="/css/pygments_themes/default.css">
     <link rel="stylesheet" href="/css/paninij.css">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -18,7 +17,7 @@
 
     <div class="base-content container">
     <main>
-<h1>Chapter 3. Getting Started</h1>
+<h1>Chapter 2. Getting Started</h1>
 <h2 id="paninis-goals">Panini’s Goals</h2>
 
 <p>A central goal of capsule-oriented programming and the Panini language is to
@@ -39,14 +38,21 @@ capsules when safe to do so.</p>
 
 <p>Listing 3.1: Hello World in Panini</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">HelloWorld</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">HelloWorld</span> <span class="o">{</span>
   <span class="kt">void</span> <span class="nf">run</span><span class="o">(){</span>
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Panini: Hello World!"</span><span class="o">);</span>
     <span class="kt">long</span> <span class="n">time</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
     <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Time is now: "</span> <span class="o">+</span> <span class="n">time</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This program declares a capsule called HelloWorld. The declaration of this
@@ -72,12 +78,17 @@ file HelloWorld.java.</p>
 
 <p>To compile this program simply run:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ panc HelloWorld.java
+<div class="highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre>$ panc HelloWorld.java
 You can then run this panini program with:
 $ panini HelloWorld
 Panini: Hello World!
 Time is now: 1375940448626
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>The printed time is the difference, measured in milliseconds, between the time
@@ -102,7 +113,30 @@ these parts together.</p>
 
 <p><strong>Listing 3.2:</strong> Hello World Decomposed!</p>
 
-<div class="language-java highlighter-rouge"><pre class="highlight"><code><span class="n">capsule</span> <span class="n">Console</span> <span class="o">{</span>
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td class="code"><pre><span class="n">capsule</span> <span class="n">Console</span> <span class="o">{</span>
   <span class="kt">void</span> <span class="nf">write</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
   <span class="o">}</span>
@@ -126,7 +160,8 @@ these parts together.</p>
   <span class="n">g</span><span class="o">.</span><span class="na">greet</span><span class="o">();</span>
  <span class="o">}</span>
 <span class="o">}</span>
-</code></pre>
+</pre></td></tr></tbody></table>
+</div>
 </div>
 
 <p>This new version declares a capsule Console on line 1. This capsule declares a
