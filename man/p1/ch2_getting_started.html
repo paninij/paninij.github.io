@@ -16,7 +16,7 @@
   <body>
 
     <div class="base-content container">
-    <main>
+    <main class="manual-main-content">
 <h1>Chapter 2. Getting Started</h1>
 <h2 id="paninis-goals">Panini’s Goals</h2>
 
@@ -129,11 +129,10 @@ declaration.</p>
 
 <p>There are various ways set up your Java development environment to compile and
 run this program. You can use your favorite Java IDE (e.g. Eclipse, IntelliJ
-IDEA) and/or your favorite build tool (e.g. Maven, Gradle). (See <a href="/man/p4/ch3_development_environment.html">Chapter
-3</a> for more information.)</p>
-
-<p>But at a minimum, you need a standard Java 8 compiler, two @PaniniJ JARs, and
-the JVM. The latest @PaniniJ JARs can be downloaded from the
+IDEA) and/or your favorite build tool (e.g. Maven, Gradle). We describe these
+various configurations in <a href="/man/p4/ch3_development_environment.html">Chapter 3</a>,
+but at a minimum, all you need is a standard Java 8 compiler, two @PaniniJ JARs,
+and the JVM. The latest @PaniniJ JARs can be downloaded from the
 <a href="https://github.com/paninij/paninij/releases">@PaniniJ GitHub releases page</a>.</p>
 
 <p>Once you have downloaded the @Panini JARs, open your favorite text editor along
@@ -149,7 +148,7 @@ look like this:</p>
 6
 7
 8
-9</pre></td><td class="code"><pre>$ tree .
+9</pre></td><td class="code"><pre>$ tree
 .
 ├── hello
 │   ├── HelloWorldCore.java
@@ -176,15 +175,11 @@ Time is now: 1487326874036
 </div>
 
 <p>The first command says to compile both of the java files under <code class="highlighter-rouge">hello/</code>,
-searching in the @PaniniJ <code class="highlighter-rouge">lang</code> and <code class="highlighter-rouge">proc</code> JARs for classes. The second
-command says to run the JVM, using our <code class="highlighter-rouge">hello.Main</code> class as the entry point,
-and when looking for classes, searching our JARs and also the files which we
-just built. The last two lines are STDOUT from the program. (The time is the
-number of milliseconds since <a href="https://en.wikipedia.org/wiki/Unix_time">the UNIX epoch</a>.)</p>
-
-<p>Notice how easy it was to use the @PaniniJ compiler plugin. We didn’t need to
-change or configure the Java compiler at all. Just by including these JARs on
-the compiler classpath, <code class="highlighter-rouge">javac</code> discovers and uses the @PaniniJ compiler plugin.</p>
+searching in the @PaniniJ <code class="highlighter-rouge">lang</code> and <code class="highlighter-rouge">proc</code> JARs for classes. The second command
+says to run the JVM, searching for classes in the @PaniniJ JARs and also the
+files we just built and using as our entry point the <code class="highlighter-rouge">hello.Main</code> class. The
+last two lines are STDOUT from the program. (The time is the number of
+milliseconds since <a href="https://en.wikipedia.org/wiki/Unix_time">the UNIX epoch</a>.)</p>
 
 <p>The curious may be interested to take a look at the files created by our
 compilation.</p>
@@ -238,32 +233,42 @@ compilation.</p>
 compiler plugin, it also created new Java source files (e.g.
 <code class="highlighter-rouge">hello/HelloWorld.java</code>, <code class="highlighter-rouge">hello/HelloWorld$Thread.java</code>, etc.)</p>
 
-<p>As per usual with a hello world example, this is meant to give a small sense of
-@PaniniJ’s syntax and tooling. Of course, the behavior of this program isn’t
-terribly interesting, since our capsule system just contains a single capsule
-which runs to completion. We aren’t yet seeing capsules run concurrently and
-interacting with one another. The next section demonstrates how to specify a
-graph of concurrently running capsules and to make a capsule invoke another
-capsule’s procedures.</p>
+<p>Notice how easy it was to use the @PaniniJ compiler plugin. We didn’t need to
+change or configure the Java compiler at all. Just by including these JARs on
+the compiler classpath, <code class="highlighter-rouge">javac</code> discovers and uses the @PaniniJ compiler plugin.</p>
+
+<p>As is usual with a hello world example, this one is meant to give a small sense
+of @PaniniJ’s syntax and tooling. But in itself, the behavior of this program
+isn’t terribly interesting, because our capsule system just contains a single
+capsule which runs to completion. We aren’t yet seeing capsules run concurrently
+and interacting with one another. The next section demonstrates how to specify a
+graph of concurrently running capsules and how to make one capsule invoke the
+procedures of another capsule.</p>
 
 <h2 id="decomposing-a-program-into-capsules">Decomposing a Program into Capsules</h2>
 
-<p>A capsule-oriented program can have more than one capsules. To illustrate, let
-us decompose our hello world program from previous section into two parts.
-Throughout this book we will use David Parnas’s information hiding principle as
+<p>A capsule-oriented program can have more than one capsule. To illustrate, let
+us decompose our hello world program from the previous section into two parts.</p>
+
+<p>Throughout this book we will use David Parnas’s information hiding principle as
 our guide for program design. In essence, this principle says that one should
 decompose a program into parts in a manner such that each part is designed to
 “know about” and “hide” certain key decisions about how that program is
 implemented. This is done so that, if necessary, those decisions can be changed
-later by us and others.</p>
+later by us and others without being forced to change too many aspects of the
+program.</p>
 
-<p>We can decompose our HelloWorld program into three parts: a Greeter capsule that
-knows about the method of proper greeting, e.g. “Hello” in English, “Namaste” in
-Hindi, a Console capsule that knows about the medium that will be used to convey
-the greeting, e.g. standard output, a file, and a HelloWorld capsule that puts
-these parts together.</p>
+<p>We can decompose our previous <code class="highlighter-rouge">HelloWorld</code> program into three parts:</p>
 
-<p><strong>Listing 2.3:</strong> Hello World Decomposed!</p>
+<ul>
+  <li>a <code class="highlighter-rouge">Console</code> capsule that knows about the medium that will be used to convey
+the greeting (e.g. standard output, a file),</li>
+  <li>a <code class="highlighter-rouge">Greeter</code> capsule that knows about the method of proper greeting (e.g.
+“Hello” in English, “Namaste” in Hindi), and</li>
+  <li>a <code class="highlighter-rouge">HelloWorld</code> capsule that puts these parts together.</li>
+</ul>
+
+<p><strong>Listing 2.3:</strong> <em>Hello World Decomposed!</em></p>
 
 <div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
@@ -324,53 +329,168 @@ these parts together.</p>
 </div>
 </div>
 
-<p>This new version declares a capsule Console on line 1. This capsule declares a
-single procedure write on line 2 that writes its argument s on the standard
-output.</p>
+<p>(<strong>Note:</strong> For brevity, this listing elides a few details of this program, in
+particular, separation into distinct files, package declarations, import
+statements, and an invocation of <code class="highlighter-rouge">CapsuleSystem#start()</code> on a root capsule.
+These details are similar to what we saw in our last example and to what we
+would expect from our experience with Java. Subsequent listings in this manual
+may also elide some of these details.)</p>
 
-<p>The Greeter capsule definition now contains a specification of what other
-capsules it requires. On line 7, it says that a Greeter requires a Console to
-work properly.</p>
+<p>We will explain this program’s syntax and semantic below, but a basic outline of
+the program is that:</p>
 
-<p>Once a capsule definition declares such requirements, procedures of the required
-capsules can be called. For example, the write procedure of the Console capsule
-is called on lines 9 and 11 in the Greeter capsule.</p>
+<ul>
+  <li>
+    <p>Lines 1-6 declare a <code class="highlighter-rouge">Console</code> capsule. This capsule declares a single
+procedure, <code class="highlighter-rouge">write()</code>, that writes its argument <code class="highlighter-rouge">s</code> to STDOUT.</p>
+  </li>
+  <li>
+    <p>Lines 8-16 declare a <code class="highlighter-rouge">Greeter</code> capsule. A <code class="highlighter-rouge">Greeter</code> includes a single
+procedure, <code class="highlighter-rouge">greet()</code> that uses a <code class="highlighter-rouge">Console</code> capsule.</p>
+  </li>
+  <li>
+    <p>Lines 18-28 declare a <code class="highlighter-rouge">HelloWorld</code> capsule. The <code class="highlighter-rouge">@Root</code> indicates that this
+capsule can be used as the root of an executable capsule system.</p>
+  </li>
+</ul>
 
-<p>As you might notice the Console and the the Greeter capsules do not have a run
-procedure, but the HelloWorld does. The run procedure is optional and signals
-that the capsule can start computation without external stimuli (i.e. if said
-capsule is instantiated in a program, then the run procedure of that capsule
-will be executed as soon as program initialization finishes).</p>
+<p>Notice that the <code class="highlighter-rouge">Console</code> and <code class="highlighter-rouge">Greeter</code> capsules do not have a run declaration,
+but the <code class="highlighter-rouge">HelloWorld</code> does. A run procedure is optional and signals that the
+capsule will execute without any external stimuli. Thus, in this program, the
+<code class="highlighter-rouge">HelloWorld</code> capsule is responsible for driving the other capsules, and the
+other capsules are responsible for asynchronously and concurrently reacting to
+its requests.</p>
 
-<p>On lines 16-20, this program has a design declaration, a new feature in Panini.
-The role of a design declaration is to define parts of a Panini program
-(typically capsules) and how these parts are connected. The design declaration
-on lines 16-20 simply states that this capsule HelloWorld will, as its internal
-parts, contain one instance of capsule Console (line 17), one instance of
-capsule Greeter (line 18). On line 19, the design declaration states that the
-Greeter instance g is connected to the Console instance c.</p>
+<p class="lead">If a capsule with a run declaration is instantiated in a program, then that
+capsule will execute the body of the declaration and then terminate.</p>
+
+<p>A run declaration is often used to to initially trigger the program. Subsequent
+activity within the program is often a reaction to tasks triggered by some run
+declaration.</p>
+
+<p>Previously we saw that our <code class="highlighter-rouge">@Capsule</code> annotation on a capsule core class meant
+that a <code class="highlighter-rouge">run()</code> method was interpreted by @PaniniJ as a run declaration. We see
+something similar here where the structure of the core class is interpreted by
+@PaniniJ to mean more than in ordinary Java. In particular, certain methods are
+interpreted as <em>procedure declarations</em> and certain fields are interpreted as
+<em>capsule references</em>.</p>
+
+<h3 id="procedure-declarations">Procedure Declarations</h3>
+
+<p>Some capsule core methods are interpreted as procedure declarations.</p>
+
+<p class="lead">If a method of a capsule core is neither an @PaniniJ-specific declaration (e.g.
+a run declaration) nor <code class="highlighter-rouge">private</code>, then that method is interpreted as a
+<em>procedure declaration</em> of that capsule.</p>
+
+<p>There are two procedure declarations in this program:</p>
+
+<ul>
+  <li>Lines 3-5 declare the <code class="highlighter-rouge">write</code> procedure to be a part of the <code class="highlighter-rouge">Console</code> capsule.</li>
+  <li>Lines 11-15 declare the <code class="highlighter-rouge">greet</code> procedure as part of the <code class="highlighter-rouge">Greeter</code> capsule.</li>
+</ul>
+
+<p>Procedures are how one capsule interacts with another. We say that a procedure
+is <em>invoked</em> to distinguish between two distinct concepts that looks
+syntactically identical:</p>
+
+<ul>
+  <li>
+    <p>A Java class method is <em>called</em>. This happens <em>synchronously</em>, that is, the
+calling context waits until the called context completes its execution.</p>
+  </li>
+  <li>
+    <p>An @PaniniJ capsule procedure is <em>invoked</em>. This happens (potentially)
+<em>asynchronously</em>, that is, the invoking capsule can send a request for some
+task to be performed and then continue without waiting for the invoked capsule
+to complete this request.</p>
+  </li>
+</ul>
+
+<p>A procedure should only be invoked from within a capsule declaration, not by
+any ordinary Java code. Capsules can both call methods and invoke procedures.</p>
+
+<h3 id="capsule-reference-declarations">Capsule Reference Declarations</h3>
+
+<p>Some capsule core fields are interpreted as capsule references.</p>
+
+<p class="lead">If a field of a capsule core field has a type which is capsule, then that field
+is interpreted as a capsule reference declaration.</p>
+
+<p>There are three capsule reference declarations in this program:</p>
+
+<ul>
+  <li>Line 10 says that a <code class="highlighter-rouge">Greeter</code> capsule always has a reference to a <code class="highlighter-rouge">Console</code>
+capsule.</li>
+  <li>Line 20 says that a <code class="highlighter-rouge">HelloWorld</code> capsule always has a reference to a <code class="highlighter-rouge">Greeter</code>
+capsule.</li>
+  <li>Line 21 is similar to line 20 but with respect to a <code class="highlighter-rouge">Greeter</code> capsule.</li>
+</ul>
+
+<p>Each declares the existence of some other capsule on which this capsule depends.
+Essentially, these capsule reference declarations are specifying all of the
+other capsules which this capsule <em>directly</em> depends.</p>
+
+<p>It is only via these capsule references that one capsule can invoke a procedure
+on another capsule, and it is only via procedure invocations that one capsule
+can directly use another capsule. For example, we can see <code class="highlighter-rouge">Greeter</code> use the
+<code class="highlighter-rouge">Console</code> capsule on lines 12 and 14 when it invokes the <code class="highlighter-rouge">write</code> procedure of
+a <code class="highlighter-rouge">Console</code> capsule instance.</p>
+
+<p>Notice that nowhere in this program have we initialized these fields. This is
+because the @PaniniJ runtime does this for us. (These fields should be
+considered <code class="highlighter-rouge">final</code>.) The @PaniniJ runtime performs this initializatio in one of
+two different ways:</p>
+
+<ul>
+  <li>If the field is annotated with <code class="highlighter-rouge">@Local</code>, then a new capsule will need to be
+created.</li>
+  <li>If the field is annotated with <code class="highlighter-rouge">@Imported</code>, then an existing capsule will need
+to be provided from elsewhere.</li>
+</ul>
+
+<p>Because of line 10, <code class="highlighter-rouge">Greeter</code> needs to be provided with some <code class="highlighter-rouge">Console</code> in order
+for the <code class="highlighter-rouge">Greeter</code> to work. In this example, this is done using the design
+declaration on lines 22-24.</p>
+
+<p>Design declarations are used to connect capsule instances to one another.
+Specifically, if a capsule declares an <code class="highlighter-rouge">@Local</code> capsule reference to some
+capsule which has some <code class="highlighter-rouge">@Imported</code> fields, then the design declaration is used
+to say what should be imported.</p>
+
+<p>We see an example of this on line 23. The <code class="highlighter-rouge">Greeter</code> capsule <code class="highlighter-rouge">g</code> (whose existence
+is declared on line 21) can’t function without importing some <code class="highlighter-rouge">Console</code> (see
+line 10). So, it is the responsibility of the <code class="highlighter-rouge">HelloWorld</code> capsule to provide
+an import. How this is provided is specified on line 23, which says that the
+capsule instance denoted by <code class="highlighter-rouge">c</code> should also be available to the capsule instance
+denoted by <code class="highlighter-rouge">g</code>.</p>
 
 <h2 id="implicit-concurrency-in-capsule-oriented-programs">Implicit Concurrency in Capsule-oriented Programs</h2>
 
 <p>As mentioned previously, Panini does not use explicit concurrency features.
-Instead, the programmer modularizes a program using capsules, which implicitly
-specify boundaries outside of which concurrency can occur. The Panini runtime
-will automatically enable concurrency in between the boundaries of capsules when
+Instead, the programmer modularizes a program using capsules. The structure of
+a capsule implicitly specifies boundaries outside of which concurrency can
+occur, but inside of which execution is sequential. The Panini runtime will
+automatically enable concurrency in between the boundaries of capsules when it
 safe to do so.</p>
 
-<p>When a procedure is called on an external capsule, e.g. call to write procedure
-on line 9, and if it is safe to do so, the call immediately returns allowing the
-caller capsule and the callee capsule to work independently. Here, the Greeter
-capsule can immediately continue to obtain the current system time, while the
-Console capsule prints first line of the greeting.</p>
+<p>When a procedure is invoked on a capsule, the this expression is completed
+immediately, even if the invoked procedure hasn’t even started executing our
+procedure invocation. This allows the invoking capsule and the invoked capsule
+to work independently and simultaneously.</p>
+
+<p>This program includes a very simple example of this: the Greeter capsule can
+invoke <code class="highlighter-rouge">write()</code>, but then immediately immediately continue to obtain the
+current system time, even before the <code class="highlighter-rouge">Console</code> capsule prints first line of the
+greeting.</p>
 
 <p>This is the main benefit of capsule-oriented programming and the Panini
 language. Implicit concurrency is achieved without having to introduce explicit
 concurrency features like threads, task pools, etc. This simplifies programming
-tasks. Not having to worry about concurrency is the main promise of
-capsule-oriented programming.</p>
+tasks. Being able to exploit concurrency without having to worry about many of
+its hazards is the main promise of capsule-oriented programming.</p>
 
-<p>Now that you’ve written your first Panini program it is time to familiarize
+<p>Now that you’ve written your first @PaniniJ program, it is time to familiarize
 yourself with more complex features of the language in the next chapters.</p>
 
 </main>
