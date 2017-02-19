@@ -1,0 +1,19 @@
+main.home-main-content {
+  font-size: 16px; }
+  main.home-main-content h3 {
+    margin-top: 2.5rem; }
+  main.home-main-content .lead {
+    font-size: 180%;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 1rem;
+    text-align: center; }
+  main.home-main-content #get-started-link {
+    color: white; }
+    main.home-main-content #get-started-link button {
+      background-color: rgba(199, 181, 94, 0.8);
+      border-color: rgba(199, 181, 94, 0.8);
+      padding: 0.5rem; }
+    main.home-main-content #get-started-link :hover {
+      background-color: #c7b55e;
+      border-color: #c7b55e; }

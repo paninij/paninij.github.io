@@ -3,6 +3,7 @@
 @import url("github_corner.css");
 @import url("code_blocks.css");
 @import url("man.css");
+@import url("home.css");
 div.base-content {
   max-width: 800px; }
 
@@ -11,6 +12,3 @@ main {
 
 ol#markdown-toc {
   list-style-type: none; }
-
-h3 {
-  margin-top: 2rem; }

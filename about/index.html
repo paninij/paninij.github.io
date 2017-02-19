@@ -36,24 +36,24 @@
   <a class="navbar-brand hidden-sm-up" href="/">@PaniniJ</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown" href="#">Intro</a>
-        <div class="dropdown-menu">
-          
-          <a class="dropdown-item" href="/intros/about.html">About</a>
-          
-          <a class="dropdown-item" href="/intros/faq.html">FAQ</a>
-          
-          <a class="dropdown-item" href="/intros/features.html">Features</a>
-          
-          <a class="dropdown-item" href="/intros/motivation.html">Motivation</a>
-          
-          <a class="dropdown-item" href="/intros/tour.html">Tour</a>
-          
-          <a class="dropdown-item" href="/intros/usage.html">Usage</a>
-          
-        </div>
-      </li>
+
+    <li class="nav-item dropdown">
+      <a class="dropdown-toggle nav-link" id="docs-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
+      <div class="dropdown-menu">
+        
+        <a class="dropdown-item" href="/docs/tour.html">Tour</a>
+        
+        <a class="dropdown-item" href="/docs/ex/hello_world.html">Example: Hello World</a>
+        
+        <a class="dropdown-item" href="/docs/ex/map_reduce.html">Example: Map-Reduce</a>
+        
+        <a class="dropdown-item" href="/docs/jargon.html">Jargon</a>
+        
+        <a class="dropdown-item" href="/docs/faq.html">FAQ</a>
+        
+      </div>
+    </li>
+
       <li class="nav-item dropdown">
         <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
         <div class="dropdown-menu">
@@ -71,28 +71,26 @@
           <a class="dropdown-item" href="/setups/maven.html">Maven</a>
           
           <a class="dropdown-item" href="/setups/netbeans.html">Netbeans</a>
-          </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/man/">Manual</a>
-          <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
-          <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
-          <a class="dropdown-item" href="/docs/examples/hello_world.html">Example: Hello World</a>
-          <a class="dropdown-item" href="/docs/examples/map_reduce.html">Example: Map-Reduce</a>
-          <a class="dropdown-item" href="/docs/history.html">History</a>
+          
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/javadoc/">Javadoc</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/man/">Manual</a>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" href="/posts/">Posts</a>
       </li>
+
       <li class="nav-item">
-        <a class="nav-link" href="/papers/">Papers</a>
+        <a class="nav-link" href="/about/">About</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/people/">People</a>
-      </li>
+
     </ul>
   </div>
 </nav>
@@ -105,7 +103,54 @@
   <h2>About PaniniJ</h2>
   <div class="row">
     <div class="col-sm-12">
-      
+      <p>Existing concurrent programming practices leave practitioners with no choice but
+to program using unbridled concurrency mechanisms, and then find and remove
+concurrency errors.</p>
+
+<p>We believe that this path is untenable. The Panini project investigates an
+alternative: create abstractions that eliminate classes of concurrency errrors
+by construction.</p>
+
+<p>Our work focuses on an abstraction called a capsule, a boundary within which you
+can write and reuse sequential code as-is. We work on increasing the class of
+concurrency errors that can be eliminated from capsule-oriented programs by
+construction.</p>
+
+<p>PaniniJ is an implementation of the Panini programming model that enables the
+use of standard Java tools for capsule-oriented programming. The Panini model is
+a set of rules that eliminates certain classes of errors that are common in
+explicit concurrent programs.</p>
+
+<p>PaniniJ utilizes annotation processing, a standard method of hooking into the
+Java compiler, to generate concurrent code based on templates created by the
+user. By converting the keywords of the PaniniJ language into annotations, we
+are able to enforce the Panini model while still allowing users to utilize any
+java tools they want.</p>
+
+<h4 id="goals">Goals</h4>
+
+<ul>
+  <li><strong>Solve pervasive and oblivious interference problems:</strong> enable modular
+reasoning about concurrent programs.</li>
+  <li><strong>Implicit concurrency:</strong> eliminate usage of unsafe features like threads and
+locks.</li>
+  <li><strong>Integrated compile-time analysis of concurrency hazards:</strong> errors are caught
+early.</li>
+  <li><strong>Retain familiarity:</strong> Programmers need not switch to a completely new
+programming model.</li>
+  <li><strong>Enable as-is reuse of sequential code:</strong> portions of software are guaranteed
+to be single-threaded.</li>
+</ul>
+
+<h4 id="history">History</h4>
+
+<ul>
+  <li><a href="http://design.cs.iastate.edu">The ISU Laboratory for Software Design</a></li>
+  <li><a href="http://design.cs.iastate.edu/projects.html#panini">Research</a></li>
+  <li><a href="http://web.cs.iastate.edu/~panini/">Old Panini Home Page</a></li>
+  <li><a href="http://web.cs.iastate.edu/~panini/man/">Original Manual Page</a></li>
+  <li><a href="http://dec1512.sd.ece.iastate.edu/">Senior Design Project Page</a></li>
+</ul>
 
     </div>
   </div>

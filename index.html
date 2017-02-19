@@ -36,24 +36,24 @@
   <a class="navbar-brand hidden-sm-up" href="/">@PaniniJ</a>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="intro-menu-toggler" data-toggle="dropdown" href="#">Intro</a>
-        <div class="dropdown-menu">
-          
-          <a class="dropdown-item" href="/intros/about.html">About</a>
-          
-          <a class="dropdown-item" href="/intros/faq.html">FAQ</a>
-          
-          <a class="dropdown-item" href="/intros/features.html">Features</a>
-          
-          <a class="dropdown-item" href="/intros/motivation.html">Motivation</a>
-          
-          <a class="dropdown-item" href="/intros/tour.html">Tour</a>
-          
-          <a class="dropdown-item" href="/intros/usage.html">Usage</a>
-          
-        </div>
-      </li>
+
+    <li class="nav-item dropdown">
+      <a class="dropdown-toggle nav-link" id="docs-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
+      <div class="dropdown-menu">
+        
+        <a class="dropdown-item" href="/docs/tour.html">Tour</a>
+        
+        <a class="dropdown-item" href="/docs/ex/hello_world.html">Example: Hello World</a>
+        
+        <a class="dropdown-item" href="/docs/ex/map_reduce.html">Example: Map-Reduce</a>
+        
+        <a class="dropdown-item" href="/docs/jargon.html">Jargon</a>
+        
+        <a class="dropdown-item" href="/docs/faq.html">FAQ</a>
+        
+      </div>
+    </li>
+
       <li class="nav-item dropdown">
         <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
         <div class="dropdown-menu">
@@ -71,28 +71,26 @@
           <a class="dropdown-item" href="/setups/maven.html">Maven</a>
           
           <a class="dropdown-item" href="/setups/netbeans.html">Netbeans</a>
-          </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item" href="/man/">Manual</a>
-          <a class="dropdown-item" href="/docs/glossary.html">Glossary</a>
-          <a class="dropdown-item" href="/docs/javadoc/">Javadoc</a>
-          <a class="dropdown-item" href="/docs/examples/hello_world.html">Example: Hello World</a>
-          <a class="dropdown-item" href="/docs/examples/map_reduce.html">Example: Map-Reduce</a>
-          <a class="dropdown-item" href="/docs/history.html">History</a>
+          
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/javadoc/">Javadoc</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/man/">Manual</a>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" href="/posts/">Posts</a>
       </li>
+
       <li class="nav-item">
-        <a class="nav-link" href="/papers/">Papers</a>
+        <a class="nav-link" href="/about/">About</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/people/">People</a>
-      </li>
+
     </ul>
   </div>
 </nav>
@@ -101,26 +99,25 @@
 
 <br />
 <main>
-<div class="container">
-  <div class="row">
-    <div class="col-sm-12">
-      <h4 id="capsule-oriented-programming-in-java">Capsule-Oriented Programming in Java</h4>
+<main class="container home-main-content">
+<p class="lead"><strong>@PaniniJ</strong> is a <em>Java compiler plugin</em> to support <strong>capsules</strong>, a safer, more
+modular way to write concurrent components.</p>
 
-<p>@PaniniJ is a Java extension for safer and more modular concurrent
-programming. It adds <strong>capsules</strong> to Java via an easy-to-integrate <em>compiler
-plugin</em>.</p>
+<p><a id="get-started-link" href="/man/p1/ch2_getting_started.html">
+  <button type="button" class="btn btn-primary btn-lg btn-block">Get Started</button>
+</a></p>
 
-<p><br /></p>
-
-<h4 id="concurrent-execution-and-asynchronous-communication">Concurrent Execution and Asynchronous Communication</h4>
+<h3 id="concurrent-execution-asynchronous-communication">Concurrent Execution, Asynchronous Communication</h3>
 
 <p>Capsules are specified by writing annotated Java classes:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
 3
 4
-5</pre></td><td class="code"><pre><span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+5
+6</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
         <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello, world."</span><span class="o">);</span>
     <span class="o">}</span>
@@ -129,24 +126,28 @@ plugin</em>.</p>
 </div>
 </div>
 
-<p>Capsules run concurrently. They send messages to one another using method-call
-syntax. These messages usually represent an asynchronous task that one capsule
-wants another capsule to perform.</p>
+<p>These annotations let’s us set up a network of capsules reacting to each other.</p>
 
-<p>A <em>transparent future</em> to the result of this asynchronous task is returned
-immediately. With this future, the client has the option to possibly</p>
+<p><strong>Concurrency:</strong> Capsules within the graph run simultaneously. They send
+messages to one another using method-call syntax. These messages usually
+represent an asynchronous task that one capsule wants another capsule to
+perform.</p>
 
-<ul>
+<p><strong>Transparent Futures:</strong> The result of an asynchronous task can be returned via
+a <em>transparent future</em>. The future looks like the object that we want, but it is
+returned immediately, even if the task takes longer. This gives the client the
+option to either.</p>
+
+<ol>
   <li>Ignore the result.</li>
-  <li>Wait for the result.</li>
+  <li>Immediately wait for the result.</li>
   <li>Do some work, then wait for the result.</li>
   <li>Or just pass it on to another capsule.</li>
-</ul>
+</ol>
 
-<p>The below example shows a client capsule asynchronously requesting two
-potentially costly operations to be performed by two other capsule instances.</p>
+<p>Here’s an example of option 3:</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
 2
 3
 4
@@ -170,28 +171,54 @@ potentially costly operations to be performed by two other capsule instances.</p
 22
 23
 24
-25</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">org.paninij.lang.Capsule</span><span class="o">;</span>
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></td><td class="code"><pre><span class="kn">import</span> <span class="nn">org.paninij.lang.Capsule</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.paninij.lang.Local</span><span class="o">;</span>
 
-<span class="nd">@Capsule</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClientCore</span> <span class="o">{</span>
+<span class="nd">@Capsule</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyClientCore</span> <span class="o">{</span>
     <span class="nd">@Local</span> <span class="n">Graph</span> <span class="n">graphA</span><span class="o">;</span>
     <span class="nd">@Local</span> <span class="n">Graph</span> <span class="n">graphB</span><span class="o">;</span>
     <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">msg</span><span class="o">;</span>
+
+        <span class="c1">// Start two costly operations. Get futures their results.</span>
         <span class="n">Path</span> <span class="n">pathAB</span> <span class="o">=</span> <span class="n">graphA</span><span class="o">.</span><span class="na">shortestPath</span><span class="o">(</span><span class="s">"A"</span><span class="o">,</span> <span class="s">"B"</span><span class="o">);</span>
         <span class="n">Path</span> <span class="n">pathYZ</span> <span class="o">=</span> <span class="n">graphA</span><span class="o">.</span><span class="na">shortestPath</span><span class="o">(</span><span class="s">"Y"</span><span class="o">,</span> <span class="s">"Z"</span><span class="o">);</span>
-        <span class="c1">// Do more work.</span>
+
+        <span class="c1">// Do more work, even though tasks may not be done.</span>
         <span class="c1">// ...</span>
 
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">pathAB</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">pathYZ</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">pathAB</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&lt;</span> <span class="n">pathYZ</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="o">{</span>        <span class="c1">// Waits if necessary.</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">"Path A --&gt; B was shorter."</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">pathAB</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">&gt;</span> <span class="n">pathYZ</span><span class="o">.</span><span class="na">length</span><span class="o">())</span> <span class="o">{</span> <span class="c1">// No waiting here.</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">"Path Y --&gt; Z was shorter."</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s">"The paths have the same length."</span>
+        <span class="o">}</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
     <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">GraphCore</span> <span class="o">{</span>
+<span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">GraphCore</span> <span class="o">{</span>
     <span class="c1">// Encapsulated graph state.</span>
     <span class="c1">// ...</span>
     <span class="kd">public</span> <span class="n">Path</span> <span class="nf">shortestPath</span><span class="o">(</span><span class="n">String</span> <span class="n">vertexA</span><span class="o">,</span> <span class="n">String</span> <span class="n">vertexB</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// Sequential shortest path algorithm.</span>
+        <span class="c1">// A sequential implementation of a shortest path algorithm.</span>
         <span class="c1">// ...</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -199,23 +226,30 @@ potentially costly operations to be performed by two other capsule instances.</p
 </div>
 </div>
 
-<p>Notice that because these calls are asynchronous, the client doesn’t need to
-wait for the <code class="highlighter-rouge">pathAB</code> result before making another request to get <code class="highlighter-rouge">pathYZ</code>. It
-is only later, where the <code class="highlighter-rouge">Path#toString()</code> methods are called that the client
-will need to wait. Ideally, the client has been able to do some more work in
-the mean time.</p>
+<p>Because calls to <code class="highlighter-rouge">Graph#shortestPath()</code> are asynchronous, the client doesn’t
+wait for the <code class="highlighter-rouge">pathAB</code> result before making a request to get <code class="highlighter-rouge">pathYZ</code>. It is only
+later, where the <code class="highlighter-rouge">Path#length()</code> methods are called that the client will need to
+wait. Subsequent calls to the <code class="highlighter-rouge">Path</code> futures won’t block.</p>
 
-<p><br /></p>
+<p>The use of futures, let’s the do some more work while waiting for the results
+from the graphs.</p>
 
-<h4 id="developed-using-standard-java-ides">Developed using Standard Java IDEs</h4>
+<h3 id="developed-with-standard-java-tools">Developed with Standard Java Tools</h3>
 
 <p>@PaniniJ provides these (and many other) features by extending the Java compiler
 to write Java code for capsules themselves. The capsules wrap the capsule cores
 and manage their interactions in a thread-safe way.</p>
 
-<p>There are a number of rules that statically restrict how a capsule can be
-defined. Many of these rules are checked by our compiler plugin. If a check
-fails, the error is reported just like an ordinary Java compiler error.</p>
+<p>Additionally, there are a number of rules that statically restrict how a capsule
+can be defined. Many of these rules are checked by our compiler plugin. If a
+check fails, the error is reported just like an ordinary Java compiler error.</p>
+
+<div class="row">
+<div class="col-md-12">
+<img src="/img/eclipse_error_message.png" class="img-fluid" alt="An @PaniniJ-specific contextual error message seen in Eclipse" />
+</div>
+</div>
+<p class="pull-right"><em>An @PaniniJ-specific contextual error message as seen in Eclipse.</em></p>
 
 <p>Our standards-compliant compiler plugin is well-supported by many standard Java
 tools: <code class="highlighter-rouge">javac</code>, Maven, Gradle, Eclipse, Netbeans, and IntelliJ IDEA. Often,
@@ -232,43 +266,16 @@ Maven-style dependency.</p>
   <li>Interactive debugging.</li>
 </ul>
 
-<p><br /></p>
+<h3 id="want-to-learn-more">Want to Learn More?</h3>
 
-<h4 id="motivations">Motivations</h4>
+<p>Take a peek at <a href="/docs/tour.html">the tour</a> to find out more about what you can
+do with @PaniniJ.</p>
 
-<p>Existing concurrent programming practices leave practitioners with no choice but
-to program using unbridled concurrency mechanisms, and then find and remove
-concurrency errors.</p>
+<p>Still interested? Start learning the syntax and running @PaniniJ programs with
+<a href="/man/p1/ch2_getting_started.html">Chapter 2. Getting Started</a> of
+<a href="/man/">The @PaniniJ Manual</a>.</p>
 
-<p>We believe that this path is untenable. The Panini project investigates an
-alternative: create abstractions that eliminate classes of concurrency errrors
-by construction.</p>
-
-<p>Our work focuses on an abstraction called a capsule, a boundary within which you
-can write and reuse sequential code as-is. We work on increasing the class of
-concurrency errors that can be eliminated from capsule-oriented programs by
-construction.</p>
-
-<p><br /></p>
-
-<h4 id="goals">Goals</h4>
-
-<ul>
-  <li><strong>Solve pervasive and oblivious interference problems:</strong> enable modular
-reasoning about concurrent programs.</li>
-  <li><strong>Implicit concurrency:</strong> eliminate usage of unsafe features like threads and
-locks.</li>
-  <li><strong>Integrated compile-time analysis of concurrency hazards:</strong> errors are caught
-early.</li>
-  <li><strong>Retain familiarity:</strong> Programmers need not switch to a completely new
-programming model.</li>
-  <li><strong>Enable as-is reuse of sequential code:</strong> portions of software are guaranteed
-to be single-threaded.</li>
-</ul>
-
-    </div>
-  </div>
-</div>
+</main>
 
 </main>
 <footer>

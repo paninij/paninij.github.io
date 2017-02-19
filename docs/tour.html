@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags always come first -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/paninij.css">
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+    <title>A Tour of @PaniniJ Features</title>
+  </head>
+
+  <body>
+
+    <div class="base-content container">
+    <header class="container">
+<div id="header-banner" class="row hidden-xs-down">
+  <div id="header-logo">
+    <a href="/">
+      <img src="/img/logo.svg" alt="@PaniniJ Logo"/>
+    </a>
+  </div>
+  <div id="header-brand">
+    <h1 class="display">&#64;PaniniJ</h1>
+    <h2 class="display">Better Modularity &#8658; Better Concurrency</h2>
+  </div>
+</div>
+
+<nav class="navbar navbar-toggleable navbar-light">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand hidden-sm-up" href="/">@PaniniJ</a>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+
+    <li class="nav-item dropdown">
+      <a class="dropdown-toggle nav-link" id="docs-menu-toggler" data-toggle="dropdown" href="#">Docs</a>
+      <div class="dropdown-menu">
+        
+        <a class="dropdown-item" href="/docs/tour.html">Tour</a>
+        
+        <a class="dropdown-item" href="/docs/ex/hello_world.html">Example: Hello World</a>
+        
+        <a class="dropdown-item" href="/docs/ex/map_reduce.html">Example: Map-Reduce</a>
+        
+        <a class="dropdown-item" href="/docs/jargon.html">Jargon</a>
+        
+        <a class="dropdown-item" href="/docs/faq.html">FAQ</a>
+        
+      </div>
+    </li>
+
+      <li class="nav-item dropdown">
+        <a class="dropdown-toggle nav-link" id="setup-menu-toggler" data-toggle="dropdown" href="#">Setup</a>
+        <div class="dropdown-menu">
+          
+          <a class="dropdown-item" href="/setups/eclipse.html">Eclipse</a>
+          
+          <a class="dropdown-item" href="/setups/gradle+eclipse.html">Gradle+Eclipse</a>
+          
+          <a class="dropdown-item" href="/setups/gradle.html">Gradle</a>
+          
+          <a class="dropdown-item" href="/setups/intellij.html">IntelliJ</a>
+          
+          <a class="dropdown-item" href="/setups/maven+eclipse.html">Maven+Eclipse</a>
+          
+          <a class="dropdown-item" href="/setups/maven.html">Maven</a>
+          
+          <a class="dropdown-item" href="/setups/netbeans.html">Netbeans</a>
+          
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/javadoc/">Javadoc</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/man/">Manual</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/posts/">Posts</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/about/">About</a>
+      </li>
+
+    </ul>
+  </div>
+</nav>
+
+</header>
+
+<br />
+<main>
+<div class="container">
+  <h2>A Tour of @PaniniJ Features</h2>
+  <div class="row">
+    <div class="col-sm-12">
+      <p>Panini is a mathematical model for describing modular concurrent computation
+using the concept of a <em>capsule</em>. A capsule is a concurrent entity similar to an
+<a href="https://en.wikipedia.org/wiki/Actor_model">actor</a>.</p>
+
+<p>@PaniniJ takes the idea of a capsule and brings it to any programmer familiar
+with Java and working on the JVM. Code created with @PaniniJ is safer and
+easier to understand than code relying on traditional Java threads.</p>
+
+<p>An @PaniniJ capsule is specified by writing a Java class. By just adding the
+<code class="highlighter-rouge">@Capsule</code> annotation to a Java class, that class can be interpreted as a
+capsule.</p>
+
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello, World."</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>We call this class <em>the capsule’s core</em>. It is how one can specify</p>
+
+<ul>
+  <li>the state encapsulated by the capsule</li>
+  <li>the other capsules which this capsule knows about</li>
+  <li>code for handling requests from other capsules</li>
+</ul>
+
+<p>You can think of a capsule core as the stateful and behavioral center of a
+capsule. The @PaniniJ runtime is responsible for wrapping and executing a graph
+of these capsule cores, all running in parallel.</p>
+
+<p>In @PaniniJ, these capsules communicate with one another by what looks like a
+normal Java method calls. However, a call actually triggers <em>an asynchronous
+message send</em>. To distinguish these inter-capsule calls from normal Java method
+calls, we say that one capsule <em>invokes a procedure</em> on another capsule.</p>
+
+<p>Here is an example where a <code class="highlighter-rouge">HelloWorld</code> capsule invokes the <code class="highlighter-rouge">work()</code> procedure
+on a <code class="highlighter-rouge">Worker</code> instance:</p>
+
+<div class="language-java code-with-line-numbers highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
+    <span class="c1">// Declare the existence of another capsule.</span>
+    <span class="nd">@Local</span> <span class="n">Worker</span> <span class="n">w</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// An async procedure invocation.</span>
+        <span class="n">Bar</span> <span class="n">b</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="na">work</span><span class="o">(</span><span class="k">new</span> <span class="n">Foo</span><span class="o">(...));</span>
+        <span class="c1">// Do our own work.</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// Finally, use the result.</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span> <span class="kd">class</span> <span class="nc">WorkerCore</span> <span class="o">{</span>
+    <span class="c1">// A procedure. It can be invoked asynchronously by other capsules.</span>
+    <span class="n">Bar</span> <span class="nf">work</span><span class="o">(</span><span class="n">Foo</span> <span class="n">f</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Bar</span> <span class="n">b</span><span class="o">;</span>
+        <span class="c1">// Do lots of work.</span>
+        <span class="c1">// ...</span>
+        <span class="c1">// Eventually return the result of the work.</span>
+        <span class="k">return</span> <span class="n">b</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>Additionally, what appears to be an inter-capsule return values is
+actually an implicit future to the request’s result. The requesting capsule may
+block on this future immediately, or it may do some other useful work before
+blocking, or it may just ignore it.</p>
+
+<p>Defining a graph of capsules is easy, because a communication link and/or node
+in the graph is just specified by declaring a capsule core field with an
+annotation.</p>
+
+<p>These and other features can be added to a Java project by including @PaniniJ as
+just another Java project dependency (e.g. a JAR or a Maven dependency).
+Specifically, you need to depend on the @PaniniJ annotation processor. An
+annotation processor extends any standards-compliant java compiler (e.g.
+Oracle’s <code class="highlighter-rouge">javac</code>, Eclipse, IntelliJ IDEA, etc).</p>
+
+<h3 id="want-to-learn-more">Want to Learn More?</h3>
+
+<p>Want to start compiling and running @PaniniJ programs?
+<a href="/man/p1/ch2_getting_started.html">Chapter 2. Getting Started</a> of
+<a href="/man/">The @PaniniJ Manual</a>.</p>
+
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>
+  <div class="container">
+    <hr />
+    
+    <p>Copyright © 2016 Iowa State University of Science and Technology. All
+    rights reserved.</p>
+
+    <p>These pages describe work carried out on the design and the
+    implementation of the Panini programming language. The PI is Hridesh Rajan
+    from Iowa State University. This work is supported in part by the US
+    National Science Foundation (NSF) under grants CCF-08-46059, CCF-10-17334,
+    CCF-11-17937, and CCF-14-23370 to Rajan. Any opinions, findings, and
+    conclusions or recommendations expressed in this material are those of the
+    author(s) and do not necessarily reflect the views of the NSF.</p>
+  </div>
+</footer>
+
+
+    </div>
+
+    <!-- Adapted from http://tholman.com/github-corners/ -->
+<a href="https://github.com/paninij/paninij" class="github-corner hidden-xs-down" aria-label="View source on Github">
+  <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#9F211A; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
