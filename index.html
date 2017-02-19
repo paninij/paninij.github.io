@@ -231,8 +231,8 @@ wait for the <code class="highlighter-rouge">pathAB</code> result before making 
 later, where the <code class="highlighter-rouge">Path#length()</code> methods are called that the client will need to
 wait. Subsequent calls to the <code class="highlighter-rouge">Path</code> futures won’t block.</p>
 
-<p>The use of futures, let’s the do some more work while waiting for the results
-from the graphs.</p>
+<p>The use of futures lets a capsule keep working while waiting for results from
+other capsules until it can no longer wait.</p>
 
 <h3 id="developed-with-standard-java-tools">Developed with Standard Java Tools</h3>
 
