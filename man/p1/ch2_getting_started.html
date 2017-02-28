@@ -15,9 +15,58 @@
 
   <body>
 
-    <div class="base-content container">
-    <main class="manual-main-content">
-<h1>Chapter 2. Getting Started</h1>
+    
+
+<nav class="manual-toc">
+  <ol>
+  
+       
+      
+      
+
+      
+
+      <li><a href="/man/p1/index.html">Part 1. Introduction</a>
+        <ol>
+          
+             
+            
+            
+            <li><a href="/man/p1/ch0_preface.html">Ch 0. Preface</a></li>
+          
+            
+            
+            <li><a href="/man/p1/ch1_motivation.html">Ch 1. Motivation</a></li>
+          
+            
+            
+            <li><a href="/man/p1/ch2_getting_started.html">Ch 2. Getting Started</a></li>
+          
+            
+            
+            <li><a href="/man/p1/ch3_development_environment.html">Ch 3. Development Environment</a></li>
+          
+            
+             
+        </ol>
+      </li>
+  
+      
+      
+
+       
+      
+      
+
+       
+       
+  </ol>
+</nav>
+
+<div class="manual-main-content">
+  <div class="base-content container">
+    <main>
+      <h1>Chapter 2. Getting Started</h1>
 
 
 
@@ -321,7 +370,7 @@ the greeting (e.g. standard output, a file),</li>
 <span class="kd">class</span> <span class="nc">HelloWorldCore</span> <span class="o">{</span>
   <span class="nd">@Local</span> <span class="n">Console</span> <span class="n">c</span><span class="o">;</span>
   <span class="nd">@Local</span> <span class="n">Greeter</span> <span class="n">g</span><span class="o">;</span>
-  <span class="kt">void</span> <span class="nf">design</span><span class="o">()</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">design</span><span class="o">(</span><span class="n">HelloWorld</span> <span class="n">self</span><span class="o">)</span> <span class="o">{</span>
     <span class="n">g</span><span class="o">.</span><span class="na">imports</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
   <span class="o">}</span>
   <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
@@ -440,14 +489,16 @@ can directly use another capsule. For example, we can see <code class="highlight
 <code class="highlighter-rouge">Console</code> capsule on lines 12 and 14 when it invokes the <code class="highlighter-rouge">write</code> procedure of
 a <code class="highlighter-rouge">Console</code> capsule instance.</p>
 
+<h3 id="initializing-capsule-reference-declarations">Initializing Capsule Reference Declarations</h3>
+
 <p>Notice that nowhere in this program have we initialized these fields. This is
 because the @PaniniJ runtime does this for us. (These fields should be
-considered <code class="highlighter-rouge">final</code>.) The @PaniniJ runtime performs this initializatio in one of
+considered <code class="highlighter-rouge">final</code>.) The @PaniniJ runtime performs this initialization in one of
 two different ways:</p>
 
 <ul>
-  <li>If the field is annotated with <code class="highlighter-rouge">@Local</code>, then a new capsule will need to be
-created.</li>
+  <li>If the field is annotated with <code class="highlighter-rouge">@Local</code>, then a new capsule will automatically
+be created.</li>
   <li>If the field is annotated with <code class="highlighter-rouge">@Imported</code>, then an existing capsule will need
 to be provided from elsewhere.</li>
 </ul>
@@ -468,6 +519,50 @@ an import. How this is provided is specified on line 23, which says that the
 capsule instance denoted by <code class="highlighter-rouge">c</code> should also be available to the capsule instance
 denoted by <code class="highlighter-rouge">g</code>.</p>
 
+<p>Notice that the <code class="highlighter-rouge">design()</code> method has a single parameter. This is provided so
+that a design declaration can connect the capsule doing the design with any
+<code class="highlighter-rouge">@Local</code> capsule instances.</p>
+
+<p class="lead">A capsule declaration’s design declaration takes a single parameter. This
+parameter’s type is the capsule type being declared, and it is conventionally
+named <code class="highlighter-rouge">self</code>.</p>
+
+<p><code class="highlighter-rouge">self</code> is simply a handle with which we can indicate that some <code class="highlighter-rouge">@Local</code> capsule
+should import the parent capsule instance. This is how a capsule can “pass
+itself” to one of the <code class="highlighter-rouge">@Local</code> capsules instances which it has declared. Doing
+so might look like this:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="nd">@Import</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">BarCore</span> <span class="o">{</span>
+    <span class="nd">@Local</span> <span class="n">Foo</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">design</span><span class="o">(</span><span class="n">Bar</span> <span class="n">self</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">imports</span><span class="o">(</span><span class="n">self</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
 <h2 id="implicit-concurrency-in-capsule-oriented-programs">Implicit Concurrency in Capsule-oriented Programs</h2>
 
 <p>As mentioned previously, Panini does not use explicit concurrency features.
@@ -477,10 +572,11 @@ occur, but inside of which execution is sequential. The Panini runtime will
 automatically enable concurrency in between the boundaries of capsules when it
 safe to do so.</p>
 
-<p>When a procedure is invoked on a capsule, the this expression is completed
-immediately, even if the invoked procedure hasn’t even started executing our
-procedure invocation. This allows the invoking capsule and the invoked capsule
-to work independently and simultaneously.</p>
+<p>When a procedure is invoked by one capsule on another capsule, the procedure
+invocation expression is completed immediately in the invoking capsule. This is
+true even if the invoked capsule hasn’t even started executing the body of
+this procedure on the invoking capsule’s behalf. This allows the invoking
+capsule and the invoked capsule to work independently and simultaneously.</p>
 
 <p>This program includes a very simple example of this: the Greeter capsule can
 invoke <code class="highlighter-rouge">write()</code>, but then immediately immediately continue to obtain the
@@ -497,18 +593,29 @@ its hazards is the main promise of capsule-oriented programming.</p>
 yourself with more complex features of the language in the next chapters.</p>
 
 
-</main>
 
-    </div>
 
-    <!-- Adapted from http://tholman.com/github-corners/ -->
-<a href="https://github.com/paninij/paninij" class="github-corner hidden-xs-down" aria-label="View source on Github">
-  <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#9F211A; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
-    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-  </svg>
-</a>
+
+
+
+
+
+
+
+
+
+
+  <a class="pull-right" href="/man/p1/ch3_development_environment.html">Ch 3. Development Environment</a>
+
+
+
+  <a class="pull-left" href="/man/p1/ch1_motivation.html">Ch 1. Motivation</a>
+
+
+    </main>
+  </div>
+</div>
+
 
 
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
