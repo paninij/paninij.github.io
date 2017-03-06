@@ -20,12 +20,17 @@ main {
   #markdown-toc li {
     padding-bottom: 0.1rem; }
 
-.setup-screenshot {
-  border-style: solid;
-  border-color: lightgrey;
-  border-width: thin;
+figure.screenshot {
   margin-top: 1rem;
   margin-bottom: 2rem; }
+  figure.screenshot img {
+    border-style: solid;
+    border-color: lightgrey;
+    border-width: thin; }
+  figure.screenshot figcaption {
+    text-align: center;
+    font-style: italic;
+    font-size: 90%; }
 
 h2, h3, h4 {
   margin-top: 2.5rem !important; }
