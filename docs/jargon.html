@@ -92,189 +92,443 @@
   <div class="row">
     <div class="col-sm-12">
       <ul id="markdown-toc">
-  <li><a href="#artifact-aka-source-artifact-generated-artifact" id="markdown-toc-artifact-aka-source-artifact-generated-artifact">Artifact, (a.k.a. Source Artifact, Generated Artifact)</a></li>
-  <li><a href="#artifact-generation" id="markdown-toc-artifact-generation">Artifact Generation</a></li>
-  <li><a href="#capsule" id="markdown-toc-capsule">Capsule</a></li>
-  <li><a href="#capsule-child" id="markdown-toc-capsule-child">Capsule, Child</a></li>
-  <li><a href="#capsule-leaf" id="markdown-toc-capsule-leaf">Capsule, Leaf</a></li>
-  <li><a href="#capsule-passive" id="markdown-toc-capsule-passive">Capsule, Passive</a></li>
-  <li><a href="#capsule-active" id="markdown-toc-capsule-active">Capsule, Active</a></li>
-  <li><a href="#capsule-root" id="markdown-toc-capsule-root">Capsule, Root</a></li>
-  <li><a href="#declaration-design" id="markdown-toc-declaration-design">Declaration, design()</a></li>
-  <li><a href="#declaration-init" id="markdown-toc-declaration-init">Declaration, init()</a></li>
-  <li><a href="#declaration-run" id="markdown-toc-declaration-run">Declaration, run()</a></li>
-  <li><a href="#capsule-requirements" id="markdown-toc-capsule-requirements">Capsule Requirements</a></li>
-  <li><a href="#execution-profile" id="markdown-toc-execution-profile">Execution Profile</a></li>
-  <li><a href="#future" id="markdown-toc-future">Future</a></li>
-  <li><a href="#duck-future" id="markdown-toc-duck-future">Duck Future</a></li>
-  <li><a href="#method" id="markdown-toc-method">Method</a></li>
-  <li><a href="#method-call" id="markdown-toc-method-call">Method Call</a></li>
-  <li><a href="#oracle" id="markdown-toc-oracle">Oracle</a></li>
   <li><a href="#panini" id="markdown-toc-panini">Panini</a></li>
-  <li><a href="#paninij" id="markdown-toc-paninij">PaniniJ</a></li>
-  <li><a href="#paninij-1" id="markdown-toc-paninij-1">@PaniniJ</a></li>
+  <li><a href="#paninij" id="markdown-toc-paninij">@PaniniJ</a></li>
+  <li><a href="#generated-source" id="markdown-toc-generated-source">Generated Source</a></li>
+  <li><a href="#capsule" id="markdown-toc-capsule">Capsule</a></li>
+  <li><a href="#signature" id="markdown-toc-signature">Signature</a></li>
+  <li><a href="#capsule-core" id="markdown-toc-capsule-core">Capsule Core</a></li>
+  <li><a href="#signature-core" id="markdown-toc-signature-core">Signature Core</a></li>
+  <li><a href="#capsule-reference-declaration" id="markdown-toc-capsule-reference-declaration">Capsule Reference Declaration</a></li>
+  <li><a href="#local-capsule-reference-declaration" id="markdown-toc-local-capsule-reference-declaration">Local Capsule Reference Declaration</a></li>
+  <li><a href="#imported-capsule-reference-declaration" id="markdown-toc-imported-capsule-reference-declaration">Imported Capsule Reference Declaration</a></li>
+  <li><a href="#wiring" id="markdown-toc-wiring">Wiring</a></li>
+  <li><a href="#root-capsule" id="markdown-toc-root-capsule">Root Capsule</a></li>
+  <li><a href="#passive-capsule" id="markdown-toc-passive-capsule">Passive Capsule</a></li>
+  <li><a href="#active-capsule" id="markdown-toc-active-capsule">Active Capsule</a></li>
+  <li><a href="#design-declaration" id="markdown-toc-design-declaration">Design Declaration</a></li>
+  <li><a href="#init-declaration" id="markdown-toc-init-declaration">Init Declaration</a></li>
+  <li><a href="#run-declaration" id="markdown-toc-run-declaration">Run Declaration</a></li>
+  <li><a href="#capsule-imports" id="markdown-toc-capsule-imports">Capsule Imports</a></li>
+  <li><a href="#state" id="markdown-toc-state">State</a></li>
+  <li><a href="#capsule-execution-profile" id="markdown-toc-capsule-execution-profile">Capsule Execution Profile</a></li>
   <li><a href="#procedure" id="markdown-toc-procedure">Procedure</a></li>
   <li><a href="#procedure-invocation" id="markdown-toc-procedure-invocation">Procedure Invocation</a></li>
-  <li><a href="#shape" id="markdown-toc-shape">Shape</a></li>
-  <li><a href="#signature" id="markdown-toc-signature">Signature</a></li>
-  <li><a href="#state-variable-also-state" id="markdown-toc-state-variable-also-state">State Variable, also state</a></li>
-  <li><a href="#system-topology" id="markdown-toc-system-topology">System Topology</a></li>
-  <li><a href="#template-class" id="markdown-toc-template-class">Template Class</a></li>
-  <li><a href="#wiring" id="markdown-toc-wiring">Wiring</a></li>
+  <li><a href="#future" id="markdown-toc-future">Future</a></li>
+  <li><a href="#duck-future" id="markdown-toc-duck-future">Duck Future</a></li>
+  <li><a href="#explicit-future" id="markdown-toc-explicit-future">Explicit Future</a></li>
 </ul>
 
-<h5 id="artifact-aka-source-artifact-generated-artifact">Artifact, (a.k.a. Source Artifact, Generated Artifact)</h5>
+<h5 id="panini">Panini</h5>
 
-<p>A Java source code artifact created by @PaniniJ. Key examples include capsule
-classes and duck classes.</p>
+<p>A mathematical abstraction of a programming model (a.k.a. a “core calculus”) for
+modularly analyzing a system of interacting concurrent entities called capsules.
+This is used for writing mathematical proofs.</p>
 
-<h5 id="artifact-generation">Artifact Generation</h5>
+<h5 id="paninij">@PaniniJ</h5>
 
-<p>The process by which @PaniniJ processes a set of user-defined template classes
-and automatically generates/creates derived artifacts.</p>
+<p>Java compiler plugin and runtime inspired by Panini to support capsule oriented
+programming embedded in Java.</p>
+
+<h5 id="generated-source">Generated Source</h5>
+
+<p>A Java source code file created by the @PaniniJ compiler plugin. Key examples:</p>
+
+<ul>
+  <li>The capsule classes automatically generated from user-defined capsule core
+classes.</li>
+  <li>Automatically generated duck classes.</li>
+</ul>
 
 <h5 id="capsule">Capsule</h5>
 
-<p>An actor-like software construct defined in Panini which uniquely owns its state
-variables, provides a set of procedures which can be invoked, and has an
-execution profile by which computations of invoked procedures are performed.</p>
+<p>An actor-like software construct defined in Panini which</p>
 
-<h5 id="capsule-child">Capsule, Child</h5>
+<ul>
+  <li>Owns its state variables.</li>
+  <li>Implements a set of procedures which can be asynchronously invoked by other
+capsules.</li>
+</ul>
 
-<p>A capsule declared within the definition of another capsule. Note that each
-design argument of some capsule C is not counted as a child capsule of C (though
-they may well be child capsules of some other capsule).</p>
+<p>A capsule is declared by writing a capsule core class and adding the <code class="highlighter-rouge">@Capsule</code>
+annotation to it. For example, the following will declare a capsule named <code class="highlighter-rouge">Foo</code>:</p>
 
-<h5 id="capsule-leaf">Capsule, Leaf</h5>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<p>A capsule having no children. A leaf capsule may be either passive or active.</p>
+<h5 id="signature">Signature</h5>
 
-<h5 id="capsule-passive">Capsule, Passive</h5>
+<p>A Panini analog of a Java interface. Each signature specifies a set of
+procedures. Capsules may implement signatures.</p>
 
-<p>A capsule having no user-defined run() declaration.</p>
+<h5 id="capsule-core">Capsule Core</h5>
 
-<h5 id="capsule-active">Capsule, Active</h5>
+<p>A Java class annotated with <code class="highlighter-rouge">@Capsule</code>. It is used to declare capsule types.
+For example, the class <code class="highlighter-rouge">FooCore</code> below declares an (automatically generated)
+capsule type, <code class="highlighter-rouge">Foo</code>.</p>
 
-<p>A capsule having a user-defined run() declaration.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<h5 id="capsule-root">Capsule, Root</h5>
+<p>Within the body of a capsule core class, various syntactic constructs are
+interpreted as different parts of a capsule declaration. For example, within a
+capsule core class:</p>
 
-<p>A capsule which is active and has no dependencies. Usually designated with the
-@Root annotation.</p>
+<ul>
+  <li>A method named <code class="highlighter-rouge">design</code> is interpreted as the capsule’s design declaration.</li>
+  <li>Most methods are interpreted as procedures definitions.</li>
+  <li>Fields whose types are capsule types are interpreted as capsule reference
+declarations.</li>
+</ul>
 
-<h5 id="declaration-design">Declaration, design()</h5>
+<p>It is by processing a set of capsule core classes that @PaniniJ performs all of
+its static checks and source generation.</p>
 
-<p>Where the user defines the set of design arguments and specifies what capsules
-are to be wired to it’s child capsules.</p>
+<h5 id="signature-core">Signature Core</h5>
 
-<h5 id="declaration-init">Declaration, init()</h5>
+<p>A Java class annotated with <code class="highlighter-rouge">@Signature</code>. It is analogous to a capsule core
+class, but it is used to specify signatures. For example, the class <code class="highlighter-rouge">SigCore</code>
+declares an (automatically generated) signature type, <code class="highlighter-rouge">Sig</code>.</p>
 
-<p>Where the user defines initialization code for a capsule’s state variables.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="nd">@Signature</span>
+<span class="kd">class</span> <span class="nc">SigCore</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<h5 id="declaration-run">Declaration, run()</h5>
+<p>A capsule can implement a signature by making the capsule core class implement
+the appropriate signature core class. For example,</p>
 
-<p>Where the user defines custom run behavior for a capsule. If a capsule has a run
-declaration, it is called an active capsule. Otherwise, it is called a passive
-capsule.</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="kd">implements</span> <span class="n">SigCore</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<h5 id="capsule-requirements">Capsule Requirements</h5>
+<h5 id="capsule-reference-declaration">Capsule Reference Declaration</h5>
 
-<p>The set of capsules S which must be passed to a capsule C in order for C to be
-well-defined.</p>
+<p>A declaration within a capsule that indicates that this capsule relies on some
+other capsule. A capsule reference is declared by adding to a capsule core class
+a field of capsule type. For example, the following capsule <code class="highlighter-rouge">Foo</code> declares a
+capsule reference to some other capsule of type <code class="highlighter-rouge">Bar</code> which in this context is
+named <code class="highlighter-rouge">b</code>.</p>
 
-<h5 id="execution-profile">Execution Profile</h5>
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="nd">@Imported</span> <span class="n">Bar</span> <span class="n">b</span><span class="o">;</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
 
-<p>The mechanism or policy by which a capsule’s procedure invocations are
-processed. For example, in the case of the thread execution profile, procedure
-invocations are submitted to a queue and processed one-by-one by that capsule’s
-own dedicated thread.</p>
+<p>This means that the correct behavior of <code class="highlighter-rouge">Foo</code> depends upon the availability of a
+<code class="highlighter-rouge">Bar</code> capsule instance.</p>
+
+<p>The fields being used to declare a capsule reference are initialized by the
+runtime. Client code should never modify these fields.</p>
+
+<p>There are two different kinds of capsule reference declarations: <code class="highlighter-rouge">@Local</code> and
+<code class="highlighter-rouge">@Imported</code>.</p>
+
+<h5 id="local-capsule-reference-declaration">Local Capsule Reference Declaration</h5>
+
+<p>A capsule reference declaration annotated with <code class="highlighter-rouge">@Local</code>. For example,</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="nd">@Local</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>A <code class="highlighter-rouge">@Local</code> capsule reference indicates that for every instance of the containing
+capsule, the runtime should instantiate an instance of the contained capsule.</p>
+
+<p>In the above example, this means that for every <code class="highlighter-rouge">Foo</code> instance the runtime will
+make a distinct <code class="highlighter-rouge">Bar</code> instance, and in the context of that <code class="highlighter-rouge">Foo</code>, the <code class="highlighter-rouge">Bar</code> can
+be accessed by the name <code class="highlighter-rouge">bar</code>.</p>
+
+<p>This is one of two kinds of capsule references. The other kind is <code class="highlighter-rouge">@Imported</code>.</p>
+
+<h5 id="imported-capsule-reference-declaration">Imported Capsule Reference Declaration</h5>
+
+<p>A capsule reference declaration annotated with <code class="highlighter-rouge">@Imported</code>. For example</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="nd">@Imported</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">BarCore</span> <span class="o">{</span>
+    <span class="c1">// ...</span>
+<span class="o">}</span>
+
+<span class="nd">@Root</span> <span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">MainCore</span> <span class="o">{</span>
+    <span class="nd">@Local</span> <span class="n">Foo</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="nd">@Local</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">design</span><span class="o">(</span><span class="n">Main</span> <span class="n">self</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">imports</span><span class="o">(</span><span class="n">bar</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>An <code class="highlighter-rouge">@Imported</code> capsule reference indicates that every instance of the containing
+capsule, will need to be provided with a capsule instance of the contained type.
+It is the responsibility of some other capsule’s design declaration to indicate
+how an <code class="highlighter-rouge">@Imported</code> capsule should be provided. This so-called “wiring” is done
+using the <code class="highlighter-rouge">imports()</code>.</p>
+
+<p>In the above example, for every instance of a <code class="highlighter-rouge">Main</code> capsule, there is one
+<code class="highlighter-rouge">Foo</code> and one <code class="highlighter-rouge">@Bar</code>. (See <code class="highlighter-rouge">@Local</code> capsule reference declaration.) The <code class="highlighter-rouge">Main</code>
+capsule, because it declared a <code class="highlighter-rouge">@Local Foo</code>, is responsible for indicating where
+the <code class="highlighter-rouge">Bar</code> that it requires should come from. This is specified inside of the
+<code class="highlighter-rouge">Main</code> capsule’s design declaration by calling the <code class="highlighter-rouge">imports()</code> method as
+appropriate.</p>
+
+<p>This is one of two kinds of capsule references. The other kind is <code class="highlighter-rouge">@Local</code>.</p>
+
+<h5 id="wiring">Wiring</h5>
+
+<p>The process of initializing a system of capsules with references to one another
+according to the user-defined system topology.</p>
+
+<h5 id="root-capsule">Root Capsule</h5>
+
+<p>A capsule declaration with an additional <code class="highlighter-rouge">@Root</code> annotation. This is often an
+active capsule which has various <code class="highlighter-rouge">@Local</code> capsule declarations wired together
+as appropriate. All of a <code class="highlighter-rouge">@Root</code> capsule’s capsule reference declarations must
+be <code class="highlighter-rouge">@Local</code>.</p>
+
+<h5 id="passive-capsule">Passive Capsule</h5>
+
+<p>A capsule without a run declaration. A passive capsule <em>reacts</em> to other
+capsules invoking its procedures. It may also invoke procedures on other
+capsules.</p>
+
+<h5 id="active-capsule">Active Capsule</h5>
+
+<p>A capsule with a run declaration. An active capsule <em>drives</em> other capsules by
+invoking their procedures. Such a capsule has no procedures. Once the capsule
+system is appropriately instantiated, the runtime will execute the body of an
+active capsule’s run declaration. Once this has completed, the capsule will
+terminate.</p>
+
+<h5 id="design-declaration">Design Declaration</h5>
+
+<p>A method named <code class="highlighter-rouge">design</code> on a capsule core class. This is where the user defines
+wirings between capsules. For example,</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td class="code"><pre><span class="nd">@Capsule</span>
+<span class="nd">@Root</span> <span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">MainCore</span> <span class="o">{</span>
+    <span class="nd">@Local</span> <span class="n">Foo</span> <span class="n">foo</span><span class="o">;</span>
+    <span class="nd">@Local</span> <span class="n">Bar</span> <span class="n">bar</span><span class="o">;</span>
+    <span class="kt">void</span> <span class="nf">design</span><span class="o">(</span><span class="n">Main</span> <span class="n">self</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">foo</span><span class="o">.</span><span class="na">imports</span><span class="o">(</span><span class="n">bar</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>See imported capsule references for more information.</p>
+
+<h5 id="init-declaration">Init Declaration</h5>
+
+<p>A method named <code class="highlighter-rouge">init</code> on a capsule core class. This is where the user can
+define initialization code for a capsule’s state variables. This is similar to
+a Java constructor. This method will be called during capsule instantiated. This
+will be called before any of a passive capsule’s procedures will be invoked and
+before an active capsule’s run declaration will be executed.</p>
+
+<h5 id="run-declaration">Run Declaration</h5>
+
+<p>Where the user defines the complete sequential behavior of a capsule. If a
+capsule has a run declaration, it is called an active capsule. Otherwise, it is
+called a passive capsule.</p>
+
+<h5 id="capsule-imports">Capsule Imports</h5>
+
+<p>The set of capsules which must be provided to a capsule instance of type <code class="highlighter-rouge">C</code> in
+order that instance of <code class="highlighter-rouge">C</code> to be well-defined. (See imported capsule reference
+declarations.)</p>
+
+<h5 id="state">State</h5>
+
+<p>A Panini analog of a Java instance variable (i.e. field). A state is a variable
+attached to and contained within a capsule instance.  Furthermore, the objects
+reachable from a capsule’s state are owned by that capsule. These owned
+variables and objects should only be accessed and modified by the capsule which
+owns it.</p>
+
+<p>In @PaniniJ, states are simply the fields of a capsule core class which are not
+interpreted as capsule reference declarations (i.e. those fields not marked
+with either <code class="highlighter-rouge">@Local</code> or <code class="highlighter-rouge">@Imported</code>).</p>
+
+<h5 id="capsule-execution-profile">Capsule Execution Profile</h5>
+
+<p>The policy by which a capsule’s procedure invocations are processed. For
+example, in the case of the thread execution profile, procedure invocations are
+asynchronously submitted to a queue and processed one-by-one by the invoked
+capsule’s own dedicated thread.</p>
+
+<h5 id="procedure">Procedure</h5>
+
+<p>A Panini analog of a method. A procedure is the code attached to a capsule which
+can be invoked (potentially) asynchronously by other capsules. Arguments can be
+passed and a result can be returned.</p>
+
+<p>For example, below the <code class="highlighter-rouge">Foo</code> capsule declares three procedures: <code class="highlighter-rouge">getPair()</code>,
+<code class="highlighter-rouge">getString()</code>, and <code class="highlighter-rouge">usePair()</code>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><table style="border-spacing: 0"><tbody><tr><td class="gutter gl" style="text-align: right"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></td><td class="code"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Pair</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">fst</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">snd</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="nd">@Capsule</span>
+<span class="kd">class</span> <span class="nc">FooCore</span> <span class="o">{</span>
+    <span class="n">Pair</span> <span class="nf">getPair</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Pair</span> <span class="n">p</span><span class="o">;</span>
+        <span class="c1">// Do some work and initialize `p`...</span>
+        <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Future</span> <span class="n">String</span> <span class="nf">getString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">s</span><span class="o">;</span>
+        <span class="c1">// Do some work and initialize `s`...</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">usePair</span><span class="o">(</span><span class="n">Pair</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Use `p` somehow.</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></td></tr></tbody></table>
+</div>
+</div>
+
+<p>Both procedures are invoked asynchronously. <code class="highlighter-rouge">getPair()</code> will return a duck
+future whereas <code class="highlighter-rouge">getString()</code> will return an explicit future. Invocations of
+<code class="highlighter-rouge">usePair()</code> must provide a <code class="highlighter-rouge">Pair</code> argument.</p>
+
+<h5 id="procedure-invocation">Procedure Invocation</h5>
+
+<p>A Panini analog of a method call. (See Procedure.) In @PaniniJ, the syntax looks
+just like Java method invocation syntax.</p>
 
 <h5 id="future">Future</h5>
 
 <p>A thread-safe object/class which represents a result of a task. We say that a
 future is resolved when the task is complete and the result is ready to be used.
 If a thread tries to use this result before it has been resolved, then the
-thread will block until it is resolved.</p>
+thread will block until it is resolved. In <code class="highlighter-rouge">@PaniniJ</code>, there are two kinds of
+futures: duck futures and explicit futures.</p>
 
 <h5 id="duck-future">Duck Future</h5>
 
-<p>An object/class which is a mockup of one of the user’s objects/classes but also
-acts as a future, resolvable by the panini runtime.</p>
+<p>An object which can act as a future but is also a subtype of some “normal” type.
+These are generated by the @PaniniJ runtime to remove some of the boilerplate
+from using explicit futures. A duck future “looks” like and “acts” like a normal
+object, but it will block if a method is called on it before the future has been
+resolved.</p>
 
-<h5 id="method">Method</h5>
+<h5 id="explicit-future">Explicit Future</h5>
 
-<p>A regular Java method. (This is distinct from the Panini concept of a procedure.)</p>
-
-<h5 id="method-call">Method Call</h5>
-
-<p>A regular call to a Java method. (This is distinct from the Panini concept of
-procedure invocation.)</p>
-
-<h5 id="oracle">Oracle</h5>
-
-<p>When testing whether some computation has computed some result correctly, an
-oracle can be queried for the result which that computation should have
-computed.</p>
-
-<h5 id="panini">Panini</h5>
-
-<p>The abstract programming model which defines the semantics of a system of
-interacting capsules.</p>
-
-<h5 id="paninij">PaniniJ</h5>
-
-<p>A research language similar to Java which adds support for the capsule-oriented
-programming as defined in the Panini programming model.</p>
-
-<h5 id="paninij-1">@PaniniJ</h5>
-
-<p>An annotation processor for writing Panini programs in Java.</p>
-
-<h5 id="procedure">Procedure</h5>
-
-<p>A panini analog of a method. A procedure is the user-defined code on a capsule’s
-interface which can be invoked (i.e. called), potentially by other capsules or
-other threads. Arguments can be passed and an object can be returned.
-Importantly, the returned object can be a duck future.</p>
-
-<h5 id="procedure-invocation">Procedure Invocation</h5>
-
-<p>A panini analog of a method call. (See Procedure.)</p>
-
-<h5 id="shape">Shape</h5>
-
-<p>A description of a method’s return and argument types. This is essentially the
-information in a method signature aside from its names. By extension, we also
-say that procedures have shape.</p>
-
-<h5 id="signature">Signature</h5>
-
-<p>A Panini analog of a Java interface. Each signature specifies a set of
-procedures. In order for a capsule to implement a signature, it must have a
-definition matching the shape and name of each procedure in that signature.</p>
-
-<h5 id="state-variable-also-state">State Variable, also state</h5>
-
-<p>A Panini analog of an instance variable on a Java object. A state variable is a
-variable attached to a capsule instance. They can only be accessed and modified
-by the init() declaration and procedures of the capsule which owns them.</p>
-
-<h5 id="system-topology">System Topology</h5>
-
-<p>How a network of capsules is connected.</p>
-
-<h5 id="template-class">Template Class</h5>
-
-<p>A Java class annotated with either @Capsule or @Signature which specifies the
-elements of a capsule or signature, respectively. For example, some elements
-which a capsule template class is used to define are the procedure definitions,
-the define() declaration, and child capsule declarations. It is from processing
-a set of template classes that @PaniniJ generates a set of source artifacts.</p>
-
-<h5 id="wiring">Wiring</h5>
-
-<p>The process of initializing a system of capsules with references to one another
-according to the user-defined system topology.</p>
+<p>Explicit futures may be returned from procedure invocations annotated with
+<code class="highlighter-rouge">@Future</code>. Such procedures will return a <code class="highlighter-rouge">java.util.concurrent.Future</code> instance
+boxing the result of the procedure invocation. Unlike a duck future, an explicit
+future must be manually unboxed by calling <code class="highlighter-rouge">Future#get()</code>.</p>
 
     </div>
   </div>
