@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
 <!-- Latest compiled and minified JavaScript -->
-    <title>Setup @PaniniJ in Eclipse</title>
+    <title>Setup Eclipse for @PaniniJ Development</title>
   </head>
 
   <body>
@@ -88,102 +88,126 @@
   <br />
   <main>
     <div class="container">
-  <h2>Setup @PaniniJ in Eclipse</h2>
+  <h1>Setup Eclipse for @PaniniJ Development</h1>
   <div class="row">
     <div class="col-sm-12">
-      <p>These are the overall steps to setting up an @PaniniJ project in Eclipse:</p>
-
-<ol id="markdown-toc">
-  <li><a href="#step-1-setup-project-to-use-jre-18-or-greater" id="markdown-toc-step-1-setup-project-to-use-jre-18-or-greater">Step 1: Setup project to use JRE 1.8 or greater</a></li>
-  <li><a href="#step-2-download-the-at-paninij-jar" id="markdown-toc-step-2-download-the-at-paninij-jar">Step 2: Download the at-paninij jar</a></li>
-  <li><a href="#step-3-enable-annotation-processing" id="markdown-toc-step-3-enable-annotation-processing">Step 3: Enable Annotation Processing</a></li>
-  <li><a href="#step-4-add-at-paninij-annotation-processor" id="markdown-toc-step-4-add-at-paninij-annotation-processor">Step 4: Add at-paninij annotation processor</a></li>
-  <li><a href="#step-5-add-the-at-paninij-as-a-referenced-library" id="markdown-toc-step-5-add-the-at-paninij-as-a-referenced-library">Step 5: Add the at-paninij as a referenced library</a></li>
+      <ol id="markdown-toc">
+  <li><a href="#create-a-new-java-project" id="markdown-toc-create-a-new-java-project">Create a New Java Project</a></li>
+  <li><a href="#download-the-paninij-jars" id="markdown-toc-download-the-paninij-jars">Download the @PaniniJ JARs</a></li>
+  <li><a href="#enable-annotation-processing" id="markdown-toc-enable-annotation-processing">Enable Annotation Processing</a></li>
+  <li><a href="#add-the-paninij-annotation-processor" id="markdown-toc-add-the-paninij-annotation-processor">Add the @PaniniJ Annotation Processor</a></li>
+  <li><a href="#add-the-paninij-jars-as-dependencies" id="markdown-toc-add-the-paninij-jars-as-dependencies">Add the @PaniniJ JARs as Dependencies</a></li>
 </ol>
 
-<h3 id="step-1-setup-project-to-use-jre-18-or-greater">Step 1: Setup project to use JRE 1.8 or greater</h3>
+<h3 id="create-a-new-java-project">Create a New Java Project</h3>
 
-<p>When you create a new project, be sure to choose JRE 1.8 or greater, this is
-necessary for the annotation processing to work correctly.</p>
-
-<div class="row">
-<div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-1.jpg" class="img-fluid" alt="The Hello World Capsule System" />
-</div>
-</div>
-
-<h3 id="step-2-download-the-at-paninij-jar">Step 2: Download the at-paninij jar</h3>
-
-<p>Download the @Paninij release from the github releases page. You should have
-received two JAR files (proc-0.1.1-SNAPSHOT.jar and lang-0.1.1-SNAPSHOT.jar).</p>
-
-<h3 id="step-3-enable-annotation-processing">Step 3: Enable Annotation Processing</h3>
-
-<p>Enable annotation processing by right clicking on your project in the project
-explorer and choosing “properties.” Browse to Java Compiler &gt; Annotation
-Processing and check the Enable project specific setting checkbox and Enable
-annotation processing.</p>
+<p>Select “File” &gt; “New” &gt; “Java Project”. Name your project. In order for the
+compiler plugin to work, be sure to choose JRE 1.8 or greater.</p>
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-2.jpg" class="img-fluid" alt="The Hello World Capsule System" />
+<img src="/img/setups/eclipse/step-1.jpg" class="img-fluid setup-screenshot" alt="Create a New Java Project" />
 </div>
 </div>
 
-<p>Once you hit Apply, Eclipse will inform you that a rebuild on the project is
-required. You can click yes to rebuild the project now.</p>
+<h3 id="download-the-paninij-jars">Download the @PaniniJ JARs</h3>
+
+<p>Download the latest @Paninij release from our
+<a href="https://github.com/paninij/paninij/releases">GitHub releases page</a>. There
+should be two JAR files:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">proc-X.Y.Z.jar</code>, which includes the annotation processor, that is, the
+compiler plugin. This is only needed at compile time.</li>
+  <li><code class="highlighter-rouge">lang-X.Y.Z.jar</code>, which includes the runtime. This is needed at both
+compile time and run time.</li>
+</ul>
+
+<div class="row">
+<div class="col-md-10 offset-md-1">
+<img src="/img/setups/eclipse/step-2.jpg" class="img-fluid setup-screenshot" alt="Download the @PaniniJ JARs" />
+</div>
+</div>
+
+<p>In this example, we put these JARs in a <code class="highlighter-rouge">lib/</code> directory at the root of our
+project.</p>
+
+<h3 id="enable-annotation-processing">Enable Annotation Processing</h3>
+
+<p>Go to this project’s properties by either selecting “Project” &gt; “Properties”
+from the top menu bar, or by right clicking on the project and selecting
+“Properties”.</p>
+
+<p>Then browse to “Java Compiler” &gt; “Annotation Processing”. Now check “Enable
+project specific settings” and make sure that “Enable annotation processing” is
+checked.</p>
+
+<div class="row">
+<div class="col-md-10 offset-md-1">
+<img src="/img/setups/eclipse/step-3.jpg" class="img-fluid setup-screenshot" alt="Enable Annotation Processing" />
+</div>
+</div>
+
+<p>Once you hit “Apply”, Eclipse will inform you that a rebuild on the project is
+required. You can click “Yes” to rebuild the project now.</p>
 
 <p>Note that the “Generated Source Directory” is where the sources that the
-annotation processor automatically generates will be stored. You can remove the “.”
-from “.apt_generated” and it will become visible in eclipse.</p>
+annotation processor automatically generates will be stored. If you remove the
+<code class="highlighter-rouge">.</code> prefix from <code class="highlighter-rouge">.apt_generated</code>, then this folder and the generated sources
+will become visible in the Eclipse file browser.</p>
 
-<h3 id="step-4-add-at-paninij-annotation-processor">Step 4: Add at-paninij annotation processor</h3>
+<h3 id="add-the-paninij-annotation-processor">Add the @PaniniJ Annotation Processor</h3>
 
-<p>Navigate to the Factory Path section of the project properties. It is beneath
-the Annotation Processing option. Check the Enable project specific settings
-checkbox, and click the Add External JARs… button.</p>
+<p>Navigate to the “Factory Path” section of the project properties. It is beneath
+the “Annotation Processing” option. Check the “Enable project specific settings
+checkbox”, and click the “Add JARs…” button.</p>
 
-<div class="row">
-<div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-3.jpg" class="img-fluid" alt="The Hello World Capsule System" />
-</div>
-</div>
-
-<p>Browse to where you have downloaded the JAR files from step 2. Select both of
-the JAR files and click ok. Finally, hit Apply and confirm the project rebuild.</p>
+<p>(<em>Note:</em> If the @PaniniJ JARs are not nested somewhere within the Eclipse
+project, then you will need to use “Add External JARs…” instead.)</p>
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-4.jpg" class="img-fluid" alt="The Hello World Capsule System" />
+<img src="/img/setups/eclipse/step-4a.jpg" class="img-fluid setup-screenshot" alt="Add the Annotation Processor" />
 </div>
 </div>
 
-<h3 id="step-5-add-the-at-paninij-as-a-referenced-library">Step 5: Add the at-paninij as a referenced library</h3>
+<p>Browse to where you have placed previously downloaded JAR files. Select both of
+the JAR files and click “Ok”.</p>
 
-<p>The @PaniniJ JAR files includes code necessary for the annotation processing
-and runtime. To include the JAR files as a referenced libaray, right click the
-project in the project explorer, go to “Build Path”, and choose “Add External
-Archives…”.</p>
+<p>Finally, hit “Apply” and confirm the project rebuild.</p>
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-5.jpg" class="img-fluid" alt="The Hello World Capsule System" />
+<img src="/img/setups/eclipse/step-4b.jpg" class="img-fluid setup-screenshot" alt="Add the Annotation Processor" />
 </div>
 </div>
 
-<p>Browse to where you downloaded the JAR files from step 2, and include them in
-your project. Once it is included, the project should appear like this in the
-Eclipse project explorer:</p>
+<h3 id="add-the-paninij-jars-as-dependencies">Add the @PaniniJ JARs as Dependencies</h3>
+
+<p>Lastly, we add the @PaniniJ JAR files as dependencies of our build by adding
+them to our “Build Path”. To do so, return to this project’s properties and
+select “Java Build Path”. Similar to before, click “Add JARs…” and browse to
+the @PaniniJ JARs. Select them both and click “Ok”.</p>
 
 <div class="row">
 <div class="col-md-10 offset-md-1">
-<img src="/img/setups/eclipse/step-6.jpg" class="img-fluid" alt="The Hello World Capsule System" />
+<img src="/img/setups/eclipse/step-5a.jpg" class="img-fluid setup-screenshot" alt="Add the JARs as Dependencies" />
 </div>
 </div>
 
-<p>Now you’re ready to start programming in @PaniniJ. See
-<a href="/docs/ex/hello_world.html">this page</a>
-for an example @PaniniJ Hello World program.</p>
+<p>You should see something like this once you have added these to the build path.</p>
+
+<div class="row">
+<div class="col-md-10 offset-md-1">
+<img src="/img/setups/eclipse/step-5b.jpg" class="img-fluid setup-screenshot" alt="Add the JARs as Dependencies" />
+</div>
+</div>
+
+<p>Finally, click “Ok” to exit project properties.</p>
+
+<p>Now you’re ready to start programming with @PaniniJ. See
+<a href="/man/p1/ch2_getting_started.html">The Getting Started</a> chapter of the manual
+to take the next step.</p>
 
     </div>
   </div>
