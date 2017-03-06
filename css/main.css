@@ -1,0 +1,28 @@
+div.base-content {
+  max-width: 800px; }
+
+#markdown-toc {
+  font-size: 90%;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin: 1rem; }
+  #markdown-toc li {
+    padding-bottom: 0.1rem; }
+
+main {
+  font-size: 15px; }
+  main figure.screenshot {
+    margin-top: 1rem;
+    margin-bottom: 2rem; }
+    main figure.screenshot img {
+      border-style: solid;
+      border-color: lightgrey;
+      border-width: thin; }
+    main figure.screenshot figcaption {
+      text-align: center;
+      font-style: italic;
+      font-size: 90%; }
+  main h2, main h3, main h4 {
+    margin-top: 2.5rem !important; }

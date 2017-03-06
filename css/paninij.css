@@ -4,33 +4,4 @@
 @import url("code_blocks.css");
 @import url("man.css");
 @import url("home.css");
-div.base-content {
-  max-width: 800px; }
-
-main {
-  font-size: 15px; }
-
-#markdown-toc {
-  font-size: 90%;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  margin: 1rem; }
-  #markdown-toc li {
-    padding-bottom: 0.1rem; }
-
-figure.screenshot {
-  margin-top: 1rem;
-  margin-bottom: 2rem; }
-  figure.screenshot img {
-    border-style: solid;
-    border-color: lightgrey;
-    border-width: thin; }
-  figure.screenshot figcaption {
-    text-align: center;
-    font-style: italic;
-    font-size: 90%; }
-
-h2, h3, h4 {
-  margin-top: 2.5rem !important; }
+@import url("main.css");
